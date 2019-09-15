@@ -16,10 +16,10 @@ import java.util.Hashtable;
 
 	  private String titre;
 
-	  private Hashtable etudiants;
+	  private Hashtable<Etudiant,Float> etudiants;
 
 	  public Cours() {
-	    etudiants = new Hashtable();
+	    etudiants = new Hashtable<Etudiant,Float>();
 	  }
 
 	  public Cours(String unTitre) {
