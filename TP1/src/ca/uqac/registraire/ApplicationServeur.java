@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import javax.tools.*;
 
@@ -13,6 +14,7 @@ public class ApplicationServeur {
 	public ServerSocket serverSocket = null;
 	public Socket socket =null;
 	public Class classeDeLobjet =null;
+	public Object pointeurObjet =null;
 	
 	/**
 	* prend le numéro de port, crée un SocketServer sur le port
@@ -21,7 +23,6 @@ public class ApplicationServeur {
 		try {
 			serverSocket=new ServerSocket(port);//8020
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -33,17 +34,21 @@ public class ApplicationServeur {
 	*/
 	public void aVosOrdres() {
 		try {
-			for(int i = 0;i<5;i++) {
+			Boolean run = true;
+			while(run) {
             	socket = serverSocket.accept();
         	    InputStream input = socket.getInputStream();
 				ObjectInput in = new ObjectInputStream(input);
-				Commande result;
-				result = (Commande)in.readObject();
-				traiteCommande(result);
+				Commande result = (Commande)in.readObject();
+				if(result!=null) {
+					traiteCommande(result);		
+				}else {
+					run = false;
+				}
 				//System.out.println(result.typeCommande);
-				
+				socket.close();
 			}  
-			socket.close();
+			
 			serverSocket.close();
         }catch (IOException e) {
         	e.printStackTrace();
@@ -59,6 +64,8 @@ public class ApplicationServeur {
 	public void traiteCommande(Commande uneCommande) {
 		String type = uneCommande.typeCommande;
 		String rest = uneCommande.rest;
+		String[] rests = null;
+		String nomAttribut = null;
 		switch(type) {
 		case "compilation" :
 				System.out.println("BEGIN compilation");
@@ -71,13 +78,24 @@ public class ApplicationServeur {
 				System.out.println("END");
 				break;
 		case "creation" :
-				System.out.println("BEGIN chargement");
+				System.out.println("BEGIN creation");
 				traiterCreation(classeDeLobjet,rest);
 				System.out.println("END");
 				break;
 		case "ecriture" :
+				System.out.println("BEGIN ecriture");
+				rests=rest.split("#");
+				nomAttribut = rests[1];
+				Object valeur = rests[2];
+				traiterEcriture(pointeurObjet, nomAttribut,valeur);
+				System.out.println("END");
 				break;
 		case "lecture" :
+				System.out.println("BEGIN lecture");
+				rests=rest.split("#");
+				nomAttribut = rests[1];
+				traiterLecture(pointeurObjet, nomAttribut);
+				System.out.println("END");
 				break;
 		case "fonction" :
 				break;
@@ -86,12 +104,64 @@ public class ApplicationServeur {
 		
 		}
 	}
-	
+	/**
+	* traiterEcriture : traite l’écriture d’un attribut. Confirmes au client que l’écriture
+	* s’est faite correctement.
+	*/
+	public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
+		System.out.println("traiter ecriture...");
+		
+		try {
+			Field champ = pointeurObjet.getClass().getDeclaredField(attribut);
+			champ.setAccessible(true);
+			champ.set(pointeurObjet, valeur);
+			System.out.println("ecriture ok");
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		try {
+			OutputStream o = socket.getOutputStream();
+			ObjectOutput s=new ObjectOutputStream(o);
+			s.writeObject("ecriture ok");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	}
 	/**
 	* traiterLecture : traite la lecture d’un attribut. Renvoies le résultat par le
 	* socket
 	*/
 	public void traiterLecture(Object pointeurObjet, String attribut) {
+		System.out.println("traiter lecture...");
+		Object obj=null;
+		
+		try {
+			Field champ = pointeurObjet.getClass().getDeclaredField(attribut);
+			champ.setAccessible(true);
+			obj = champ.get(pointeurObjet);
+			System.out.println(obj.toString());
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			OutputStream o = socket.getOutputStream();
+			ObjectOutput s=new ObjectOutputStream(o);
+			s.writeObject(attribut+" : "+ obj.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 		
 	}
 	/**
@@ -102,40 +172,25 @@ public class ApplicationServeur {
 			System.out.println("traiter creation... ");
 			String[] rests = rest.split("#");
 			String identificateur = rests[1];
-			Object object =null;
+			
 			Constructor constructor1 = null;
-			try {
-				constructor1 = classeDeLobjet.getConstructor(String.class);
+			
 				try {
-					object = constructor1.newInstance(identificateur);
-					System.out.println(object.toString());
+					constructor1 = classeDeLobjet.getConstructor(String.class);
+					
+					pointeurObjet = constructor1.newInstance(identificateur);
+					System.out.println(pointeurObjet.toString());
 					OutputStream o = socket.getOutputStream();
 					ObjectOutput s=new ObjectOutputStream(o);
-					s.writeObject("creation d'object: "+ object.toString());
-				} catch (InstantiationException e) {
+					s.writeObject("creation d'object: "+ pointeurObjet.toString());
+				} catch (InstantiationException  | IllegalAccessException 
+						| IllegalArgumentException | InvocationTargetException 
+						| IOException |NoSuchMethodException 
+						| SecurityException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				
-			} 
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				}  
+			 
 				
 	}
 	
@@ -145,32 +200,35 @@ public class ApplicationServeur {
 	*/
 	public void traiterChargement(String nomQualifie) {
 		System.out.println("traiter chargement...");
-		try {
-				classeDeLobjet = Class.forName(nomQualifie);
-			    String className = classeDeLobjet.getName();
-			    System.out.println("class name:"+className);
-			    System.out.println("traiter chargement ends ");
-		    
-		    
-				OutputStream o = socket.getOutputStream();
-				ObjectOutput s=new ObjectOutputStream(o);
-				s.writeObject("chargement ok");
-				
-		}catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}	
-		
-//		ClassLoader cl = ApplicationServeur.class.getClassLoader();
 //		try {
-//			Class aClass = cl.loadClass(cheminRelatifFichierSource);
-//	        System.out.println("aClass.getName() = " + aClass.getName());
-//		}catch(ClassNotFoundException e){
+//				classeDeLobjet = Class.forName(nomQualifie);
+//			    String className = classeDeLobjet.getName();
+//			    System.out.println("class name:"+className);
+//			    System.out.println("traiter chargement ends ");
+//		    
+//		    
+//				OutputStream o = socket.getOutputStream();
+//				ObjectOutput s=new ObjectOutputStream(o);
+//				s.writeObject("chargement ok");
+//				
+//		}catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			
+//		} catch (ClassNotFoundException e) {
 //			e.printStackTrace();
-//		}
+//		}	
+		
+		ClassLoader cl = ApplicationServeur.class.getClassLoader();
+		try {
+			classeDeLobjet = cl.loadClass(nomQualifie);
+	        System.out.println("classeDeLobjet.getName() = " + classeDeLobjet.getName());
+	        OutputStream o = socket.getOutputStream();
+			ObjectOutput s=new ObjectOutputStream(o);
+		s.writeObject("chargement ok");
+		}catch(ClassNotFoundException | IOException e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -218,6 +276,7 @@ public class ApplicationServeur {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+
 				}	
 	}
 	/**
@@ -228,9 +287,6 @@ public class ApplicationServeur {
 	*/
 	public static void main(String[] args) {
 
-//		String source ="";
-//		String classChemin = "";
-//		
 		ApplicationServeur appServeur = new ApplicationServeur(port);
 		appServeur.aVosOrdres();
 		

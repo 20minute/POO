@@ -92,7 +92,7 @@ public class ApplicationClient {
 		  System.out.println("Debut des traitements:");
 		    Commande prochaine = saisisCommande(commandesReader);
 		    while (prochaine != null) {
-		    	System.out.println("\tTraitement de la commande " + prochaine + " ...");
+		    	System.out.println("\tTraitement de la commande " + prochaine.typeCommande + " ...");
 		      Object resultat = traiteCommande(prochaine);
 		      System.out.println("\t\tResultat: " + resultat);
 		      prochaine = saisisCommande(commandesReader);

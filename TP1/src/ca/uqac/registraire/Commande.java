@@ -7,7 +7,7 @@ public class Commande implements java.io.Serializable {
 	public String rest;
 	//public String chargement;
 	
-	private ArrayList<String> comm ;
+	//private ArrayList<String> comm ;
 	
 	Commande() {
 		
