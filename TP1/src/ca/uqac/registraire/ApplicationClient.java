@@ -16,12 +16,20 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+/**
+  * Cette classe a été écrite afin de réaliser la partie utilisateur demandée pour le TP1
+  * @author Zheng Lijun & Fussien Paul
+  * @Version 1.01
+  */
 
 public class ApplicationClient {
 	/**
-	* prend le fichier contenant la liste des commandes, et le charge dans une
-	* variable du type Commande qui est retournée
-	*/
+	 * Cette fonction prend en entrée la liste de commande comme indiquée sur le TP
+	 * celle-ci est chargée dans une variable du type Commande qui sera retourné
+	 * @param fichier
+	 * @return null
+	 * @return commande
+	 */
 	public Commande saisisCommande(BufferedReader fichier) {
 		String s = "";
 		String ss[] = new String[100];
