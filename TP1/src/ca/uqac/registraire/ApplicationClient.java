@@ -17,7 +17,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
-  * Cette classe a été écrite afin de réaliser la partie utilisateur demandée pour le TP1
+  *  Title:        Classes for TP1
+  * Description:
+  * Copyright:    Copyright (c) 2019
+  * Company:      UQAC
   * @author Zheng Lijun & Fussien Paul
   * @Version 1.01
   */
@@ -47,7 +50,10 @@ public class ApplicationClient {
 	}
 	
 	/**
-	* initialise : ouvre les différents fichiers de lecture et écriture
+	* Initialisation des différents fichiers d'ouverture et d'écriture
+	* @param fichCommandes
+	* @param fichsortie
+	* @return
 	*/
 	public void initialise(String fichCommandes, String fichSortie) {
 		
@@ -62,6 +68,12 @@ public class ApplicationClient {
 	    	return;	
 	    }
 	}
+	
+	/**
+	 * Traitement de la commande (ouverture, traitement et fermeture du serveur)
+	 * @param uneCommande
+	 * @return
+	 */
 
 	public Object traiteCommande(Commande uneCommande) {
 		
@@ -95,7 +107,10 @@ public class ApplicationClient {
 		
 	}
 	
-	
+	/**
+	 * Ecriture du scénario permettant de vérifier le début, le traitement et le résultat de celui-ci
+	 * @param commandesReader
+	 */
 	  public void scenario(BufferedReader commandesReader) {
 		  System.out.println("Debut des traitements:");
 		    Commande prochaine = saisisCommande(commandesReader);
@@ -108,7 +123,10 @@ public class ApplicationClient {
 		    System.out.println("Fin des traitements");
 		  }
 
-	
+	/**
+	 * Inscription des informations du serveur
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		int port = 8020;
 		String hostname = "127.0.0.1";

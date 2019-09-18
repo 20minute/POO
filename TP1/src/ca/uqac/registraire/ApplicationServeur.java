@@ -8,7 +8,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import javax.tools.*;
 
-
+/**
+ *  Title:        Classes for TP1
+ * Description:
+ * Copyright:    Copyright (c) 2019
+ * Company:      UQAC
+ * @author Zheng Lijun & Fussien Paul
+ * @Version 1.01
+ */
 public class ApplicationServeur {
 	public static final int port = 8020;
 	public ServerSocket serverSocket = null;
@@ -17,8 +24,9 @@ public class ApplicationServeur {
 	public Object pointeurObjet =null;
 	
 	/**
-	* prend le numéro de port, crée un SocketServer sur le port
-	*/
+	 * Permet d'établir un port pour créer un socket sur celui-ci
+	 * @param port
+	 */
 	public ApplicationServeur (int port) {
 		try {
 			serverSocket=new ServerSocket(port);//8020
@@ -32,6 +40,7 @@ public class ApplicationServeur {
 	* ce qui est envoyé à travers la Socket, recrée l’objet Commande envoyé par
 	* le client, et appellera traiterCommande(Commande uneCommande)
 	*/
+
 	public void aVosOrdres() {
 		try {
 			Boolean run = true;
@@ -58,9 +67,9 @@ public class ApplicationServeur {
 	}
 	
 	/**
-	* prend uneCommande dument formattée, et la traite. Dépendant du type de commande,
-	* elle appelle la méthode spécialisée
-	*/
+	 * Cette fonction permet de prendre uneCommande pour la traiter avec une méthode spécialisée
+	 * @param uneCommande
+	 */
 	public void traiteCommande(Commande uneCommande) {
 		String type = uneCommande.typeCommande;
 		String rest = uneCommande.rest;
@@ -104,10 +113,13 @@ public class ApplicationServeur {
 		
 		}
 	}
+
 	/**
-	* traiterEcriture : traite l’écriture d’un attribut. Confirmes au client que l’écriture
-	* s’est faite correctement.
-	*/
+	 * Traite l'écriture d'un attibut et renvoie une confirmation au client
+	 * @param pointeurObjet
+	 * @param attribut
+	 * @param valeur
+	 */
 	public void traiterEcriture(Object pointeurObjet, String attribut, Object valeur) {
 		System.out.println("traiter ecriture...");
 		
@@ -135,10 +147,12 @@ public class ApplicationServeur {
 		
 		
 	}
+
 	/**
-	* traiterLecture : traite la lecture d’un attribut. Renvoies le résultat par le
-	* socket
-	*/
+	 * Traite la lecture d'un attribut et renvoie la réponse par la socket
+	 * @param pointeurObjet
+	 * @param attribut
+	 */
 	public void traiterLecture(Object pointeurObjet, String attribut) {
 		System.out.println("traiter lecture...");
 		Object obj=null;
@@ -164,10 +178,12 @@ public class ApplicationServeur {
 			
 		
 	}
+
 	/**
-	* traiterCreation : traite la création d’un objet. Confirme au client que la création
-	* s’est faite correctement.
-	*/
+	 * Traite la création d'un objet avec une confirmation renvoyée au client
+	 * @param classeDeLobjet
+	 * @param rest
+	 */
 	public void traiterCreation(Class classeDeLobjet, String rest) {
 			System.out.println("traiter creation... ");
 			String[] rests = rest.split("#");
@@ -198,6 +214,10 @@ public class ApplicationServeur {
 	* traiterChargement : traite le chargement d’une classe. Confirmes au client que la création
 	* s’est faite correctement.
 	*/
+	/**
+	 * Traite le chargement d'un classe avec le retour de la création
+	 * @param nomQualifie
+	 */
 	public void traiterChargement(String nomQualifie) {
 		System.out.println("traiter chargement...");
 //		try {
@@ -232,10 +252,11 @@ public class ApplicationServeur {
 	}
 	
 	/**
-	* traiterCompilation : traite la compilation d’un fichier source java. Confirme au client
-	* que la compilation s’est faite correctement. Le fichier source est donné par son chemin
-	* relatif par rapport au chemin des fichiers sources.
-	*/
+	 * traiterCompilation : traite la compilation d’un fichier source java. Confirme au client
+	 * que la compilation s’est faite correctement. Le fichier source est donné par son chemin
+	 * relatif par rapport au chemin des fichiers sources.
+	 * @param cheminRelatifFichierSource
+	 */
 	public void traiterCompilation(String cheminRelatifFichierSource) {
 				/*./src/ca/uqac/registraire/Cours.java,./src/ca/uqac/registraire/Etudiant.java#./classes*/
 				String[] rests=cheminRelatifFichierSource.split("#");
@@ -279,12 +300,14 @@ public class ApplicationServeur {
 
 				}	
 	}
+
 	/**
-	* programme principal. Prend 4 arguments: 1) numéro de port, 2) répertoire source, 3)
-	* répertoire classes, et 4) nom du fichier de traces (sortie)
-	* Cette méthode doit créer une instance de la classe ApplicationServeur, l’initialiser
-	* puis appeler aVosOrdres sur cet objet
-	*/
+	 * programme principal. Prend 4 arguments: 1) numéro de port, 2) répertoire source, 3)
+	 * répertoire classes, et 4) nom du fichier de traces (sortie)
+	 * Cette méthode doit créer une instance de la classe ApplicationServeur, l’initialiser
+	 * puis appeler aVosOrdres sur cet objet
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		ApplicationServeur appServeur = new ApplicationServeur(port);
