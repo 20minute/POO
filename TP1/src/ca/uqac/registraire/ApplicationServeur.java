@@ -1,11 +1,14 @@
 package ca.uqac.registraire;
 
 import java.net.*;
+import java.util.ArrayList;
 import java.io.*;
 import java.lang.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.tools.*;
 
 /**
@@ -22,6 +25,8 @@ public class ApplicationServeur {
 	public Socket socket =null;
 	public Class classeDeLobjet =null;
 	public Object pointeurObjet =null;
+	public ArrayList<Object> pointeurObjets = new ArrayList<Object>();
+	public int index = 0; // index of object
 	
 	/**
 	 * Permet d'établir un port pour créer un socket sur celui-ci
@@ -75,6 +80,7 @@ public class ApplicationServeur {
 		String rest = uneCommande.rest;
 		String[] rests = null;
 		String nomAttribut = null;
+		String identificateur = null;
 		switch(type) {
 		case "compilation" :
 				System.out.println("BEGIN compilation");
@@ -94,8 +100,15 @@ public class ApplicationServeur {
 		case "ecriture" :
 				System.out.println("BEGIN ecriture");
 				rests=rest.split("#");
+				identificateur = rests[0]; 
 				nomAttribut = rests[1];
 				Object valeur = rests[2];
+				for(Object o: pointeurObjets) {
+					if(o.toString().equals(identificateur)) {
+						pointeurObjet = o;
+					}
+						
+				}
 				traiterEcriture(pointeurObjet, nomAttribut,valeur);
 				System.out.println("END");
 				break;
@@ -107,6 +120,44 @@ public class ApplicationServeur {
 				System.out.println("END");
 				break;
 		case "fonction" :
+				System.out.println("BEGIN fonction");
+				rests=rest.split("#");
+				identificateur = rests[0];
+				String nomFonction = rests[1];
+				String[] types = null;
+				Object[] valeurs = null;
+				if(rests.length > 2) {
+					String parametre = rests[2];
+					String parametres[] = parametre.split(",");
+					types = new String[parametres.length];
+					valeurs = new Object[parametres.length];
+					for(int i = 0;i < parametres.length;i++)
+					{
+						if (parametres[i].contains("ID")) //l’argument de la fonction est un autre des objets
+						{
+							types[i] = parametres[i].split(":")[0];
+							String StrValeur = parametres[i].split(":")[1].substring(3, parametres[i].split(":")[1].length()-1);
+							for(Object o : pointeurObjets) {
+								if(o.toString().contains(StrValeur) ){
+									valeurs[i] = o;
+								}
+							}
+						}else {
+							types[i] = parametres[i].split(":")[0];
+							String StrValeur = parametres[i].split(":")[1];
+							valeurs[i] = Float.valueOf(StrValeur);
+						}
+					}
+					
+				}
+				for(Object o : pointeurObjets) {
+					if(o.toString().contains(identificateur)) {
+						pointeurObjet = o;
+					}
+				}
+				traiterAppel(pointeurObjet,nomFonction,types,valeurs);
+				System.out.println("END");
+				
 				break;
 		default:
 				break;
@@ -194,8 +245,10 @@ public class ApplicationServeur {
 				try {
 					constructor1 = classeDeLobjet.getConstructor(String.class);
 					
+					pointeurObjets.add(constructor1.newInstance(identificateur));
 					pointeurObjet = constructor1.newInstance(identificateur);
-					System.out.println(pointeurObjet.toString());
+					
+					System.out.println(pointeurObjets.toString());
 					OutputStream o = socket.getOutputStream();
 					ObjectOutput s=new ObjectOutputStream(o);
 					s.writeObject("creation d'object: "+ pointeurObjet.toString());
@@ -301,6 +354,47 @@ public class ApplicationServeur {
 				}	
 	}
 
+	/**
+	* traiterAppel : traite l’appel d’une méthode, en prenant comme argument l’objet
+	* sur lequel on effectue l’appel, le nom de la fonction à appeler, un tableau de nom de
+	* types des arguments, et un tableau d’arguments pour la fonction. Le résultat de la
+	* fonction est renvoyé par le serveur au client (ou le message que tout s’est bien
+	* passé)
+	**/
+	public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, Object[] valeurs) {
+		System.out.println("Appel de la fonction: " + nomFonction);
+		Class[] t = new Class[types.length];
+		for(int i = 0; i < types.length; i++){
+			try {
+				if(types[i].contains("float")) {
+					t[i] = float.class;
+				}else {
+					t[i]= Class.forName (types[i]);
+					System.out.println((((String) types[i]).indexOf(".")>0?"":"java.lang.") + (String)types[i]);
+				}
+				
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try {
+			Method m = pointeurObjet.getClass().getMethod(nomFonction,t);
+			
+			//Method m1 = pointeurObjet.getClass().getMethod(nomFonction,m.getParameterTypes());
+			
+			Object result = m.invoke(pointeurObjet, valeurs);
+			OutputStream o = socket.getOutputStream();
+			ObjectOutput s=new ObjectOutputStream(o);
+			s.writeObject(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	/**
 	 * programme principal. Prend 4 arguments: 1) numéro de port, 2) répertoire source, 3)
 	 * répertoire classes, et 4) nom du fichier de traces (sortie)
