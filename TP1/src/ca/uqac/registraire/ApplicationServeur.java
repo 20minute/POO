@@ -363,21 +363,26 @@ public class ApplicationServeur {
 	**/
 	public void traiterAppel(Object pointeurObjet, String nomFonction, String[] types, Object[] valeurs) {
 		System.out.println("Appel de la fonction: " + nomFonction);
-		Class[] t = new Class[types.length];
-		for(int i = 0; i < types.length; i++){
-			try {
-				if(types[i].contains("float")) {
-					t[i] = float.class;
-				}else {
-					t[i]= Class.forName (types[i]);
-					System.out.println((((String) types[i]).indexOf(".")>0?"":"java.lang.") + (String)types[i]);
+		Class[] t = null;
+		if(types!=null) {
+			t = new Class[types.length];
+			for(int i = 0; i < types.length; i++){
+				try {
+					if(types[i].contains("float")) {
+						t[i] = float.class;
+					}else {
+						t[i]= Class.forName (types[i]);
+						System.out.println((((String) types[i]).indexOf(".")>0?"":"java.lang.") + (String)types[i]);
+					}
+					
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
+		
+		
 		try {
 			Method m = pointeurObjet.getClass().getMethod(nomFonction,t);
 			

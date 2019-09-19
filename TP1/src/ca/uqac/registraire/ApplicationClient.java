@@ -38,13 +38,17 @@ public class ApplicationClient {
 		String ss[] = new String[100];
 		Commande commande = new Commande();
 		try {
+			
 			 s=fichier.readLine();//prend une ligne de commande
+			 if(s!=null) {
 			 ss=s.split("#",2); // separer le string par 2 parties
 	         commande.typeCommande=ss[0]; // premiere partie est la type de commande
 	         commande.rest=ss[1];// deuximere partie est la reste de commande
+			}else {
+				return null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
 		}
 		return commande;
 	}
