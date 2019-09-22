@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,6 +27,9 @@ import java.net.Socket;
   */
 
 public class ApplicationClient {
+	
+	static BufferedReader fichier = null;
+	static BufferedWriter bw = null;
 	/**
 	 * Cette fonction prend en entrée la liste de commande comme indiquée sur le TP
 	 * celle-ci est chargée dans une variable du type Commande qui sera retourné
@@ -38,12 +42,11 @@ public class ApplicationClient {
 		String ss[] = new String[100];
 		Commande commande = new Commande();
 		try {
-			
 			 s=fichier.readLine();//prend une ligne de commande
 			 if(s!=null) {
-			 ss=s.split("#",2); // separer le string par 2 parties
-	         commande.typeCommande=ss[0]; // premiere partie est la type de commande
-	         commande.rest=ss[1];// deuximere partie est la reste de commande
+				 ss=s.split("#",2); // separer le string par 2 parties
+		         commande.typeCommande=ss[0]; // premiere partie est la type de commande
+		         commande.rest=ss[1];// deuximere partie est la reste de commande
 			}else {
 				return null;
 			}
@@ -63,10 +66,11 @@ public class ApplicationClient {
 		
 		try{
 	         FileReader fileIn = new FileReader(fichCommandes);
-	         BufferedReader fichier = new BufferedReader(fileIn);
+	         fichier = new BufferedReader(fileIn);
 	         
 
-	         
+	         FileWriter fileOut = new FileWriter(fichSortie);
+	         bw = new BufferedWriter(fileOut);
 	    }catch(IOException e){
 	    	e.printStackTrace();
 	    	return;	
@@ -114,17 +118,26 @@ public class ApplicationClient {
 	/**
 	 * Ecriture du scénario permettant de vérifier le début, le traitement et le résultat de celui-ci
 	 * @param commandesReader
+	 * @throws IOException 
 	 */
-	  public void scenario(BufferedReader commandesReader) {
+	  public void scenario(BufferedReader commandesReader,BufferedWriter sortieWriter) throws IOException {
 		  System.out.println("Debut des traitements:");
+		  sortieWriter.write("Debut des traitements:");
+		  sortieWriter.newLine();
 		    Commande prochaine = saisisCommande(commandesReader);
 		    while (prochaine != null) {
 		    	System.out.println("\tTraitement de la commande " + prochaine.typeCommande + " ...");
+		    	sortieWriter.write("\tTraitement de la commande " + prochaine.typeCommande + " ...");
+		    	sortieWriter.newLine();
 		      Object resultat = traiteCommande(prochaine);
 		      System.out.println("\t\tResultat: " + resultat);
+		      sortieWriter.write("\t\tResultat: " + resultat);
+		      sortieWriter.newLine();
 		      prochaine = saisisCommande(commandesReader);
 		    }
 		    System.out.println("Fin des traitements");
+		    sortieWriter.write("Fin des traitements");
+		    sortieWriter.newLine();
 		  }
 
 	/**
@@ -139,12 +152,15 @@ public class ApplicationClient {
 		ApplicationClient appClient = new ApplicationClient();
 		//appClient.initialise(fichCommandes, fichSortie);
 
+		appClient.initialise(fichCommandes,fichSortie);
 		
 		try{
-	         FileReader fileIn = new FileReader(fichCommandes);
-	         BufferedReader fichier = new BufferedReader(fileIn);
-	         
-	 		appClient.scenario(fichier);
+	       
+			appClient.scenario(fichier,bw);
+	 		
+	 		bw.flush();
+	 		bw.close();
+	 		fichier.close();
 
 	         
 	    }catch(IOException e){

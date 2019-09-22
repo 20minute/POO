@@ -273,6 +273,7 @@ public class ApplicationServeur {
 	 */
 	public void traiterChargement(String nomQualifie) {
 		System.out.println("traiter chargement...");
+		//method 1
 //		try {
 //				classeDeLobjet = Class.forName(nomQualifie);
 //			    String className = classeDeLobjet.getName();
@@ -291,7 +292,7 @@ public class ApplicationServeur {
 //		} catch (ClassNotFoundException e) {
 //			e.printStackTrace();
 //		}	
-		
+		// method 2
 		ClassLoader cl = ApplicationServeur.class.getClassLoader();
 		try {
 			classeDeLobjet = cl.loadClass(nomQualifie);
@@ -372,7 +373,7 @@ public class ApplicationServeur {
 						t[i] = float.class;
 					}else {
 						t[i]= Class.forName (types[i]);
-						System.out.println((((String) types[i]).indexOf(".")>0?"":"java.lang.") + (String)types[i]);
+						//System.out.println((((String) types[i]).indexOf(".")>0?"":"java.lang.") + (String)types[i]);
 					}
 					
 				} catch (ClassNotFoundException e) {
@@ -385,13 +386,14 @@ public class ApplicationServeur {
 		
 		try {
 			Method m = pointeurObjet.getClass().getMethod(nomFonction,t);
-			
-			//Method m1 = pointeurObjet.getClass().getMethod(nomFonction,m.getParameterTypes());
-			
 			Object result = m.invoke(pointeurObjet, valeurs);
 			OutputStream o = socket.getOutputStream();
 			ObjectOutput s=new ObjectOutputStream(o);
-			s.writeObject(result);
+			if(result!=null) {
+				s.writeObject("appel fonction - "+ nomFonction+ " ,result - " +result);
+			}else {
+				s.writeObject("appel fonction - "+ nomFonction+ " ok" );
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

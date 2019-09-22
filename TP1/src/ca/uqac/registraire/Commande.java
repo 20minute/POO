@@ -11,6 +11,10 @@ import java.util.ArrayList;
  */
 
 public class Commande implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String typeCommande;
 	public String rest;
 	
