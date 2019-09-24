@@ -16,6 +16,6 @@ Une programme client-serveur simple
 ```javascript
   var uaqc = {
     author1  : "Lijun Zheng",
-    author : "Paul Fussien"
+    author2  : "Paul Fussien"
   }
 ```
