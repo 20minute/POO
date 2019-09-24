@@ -39,7 +39,7 @@ public class ApplicationClient {
 	 */
 	public Commande saisisCommande(BufferedReader fichier) {
 		String s = "";
-		String ss[] = new String[100];
+		String[] ss = null;
 		Commande commande = new Commande();
 		try {
 			 s=fichier.readLine();//prend une ligne de commande

@@ -26,7 +26,7 @@ public class ApplicationServeur {
 	public Class classeDeLobjet =null;
 	public Object pointeurObjet =null;
 	public ArrayList<Object> pointeurObjets = new ArrayList<Object>();
-	public int index = 0; // index of object
+	//public int index = 0; // index of object
 	
 	/**
 	 * Permet d'établir un port pour créer un socket sur celui-ci
