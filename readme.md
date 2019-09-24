@@ -1,11 +1,11 @@
 
-##TP1 
+#TP1 
 
 Une programme client-serveur simple 
 
 
 
-##Comment démarrer？
+#Comment démarrer？
 
 1. Démarrer le programme serveur
 2. Démarrer le programme client
