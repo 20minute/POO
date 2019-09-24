@@ -1,11 +1,11 @@
 
-#TP1 
+<h1>TP1</h1> 
 
 Une programme client-serveur simple 
 
 
 
-#Comment démarrer？
+<h1>Comment démarrer？</h1>
 
 1. Démarrer le programme serveur
 2. Démarrer le programme client
