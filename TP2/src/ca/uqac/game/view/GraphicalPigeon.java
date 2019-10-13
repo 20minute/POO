@@ -31,6 +31,8 @@ public class GraphicalPigeon extends Pigeon implements Runnable {
 	}
 	@Override
 	public void run() {
+		this.Remove();
+		this.Move();
 		this.Draw();
 	}
 }

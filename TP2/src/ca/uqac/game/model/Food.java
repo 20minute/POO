@@ -1,11 +1,30 @@
 package ca.uqac.game.model;
 
+import javafx.geometry.Point2D;
+import java.util.Random;
+
 public class Food {
 
 	
-	private boolean isFresh = true;
+
+	private boolean isFresh ;
+	private Point2D p;
 	
-	public Food() {
-		
+	public Food(Point2D p) {
+		this.p = p;
+		Random r = new Random();
+		isFresh = r.nextBoolean();
+	}
+	
+	public Point2D getP() {
+		return p;
+	}
+
+	public void setP(Point2D p) {
+		this.p = p;
+	}
+
+	public boolean isFresh() {
+		return isFresh;
 	}
 }
