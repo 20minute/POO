@@ -46,5 +46,5 @@ Debut des traitements:
 	Traitement de la commande fonction ...
 		Resultat: appel fonction - getMoyenne ,result - 3.85
 	Traitement de la commande fonction ...
-		Resultat: appel fonction - toString ,result - Cours(Titre: 8inf853 <mathilde[3.85] = 3.7 , raymond[2.85] = 3.0 >)
+		Resultat: appel fonction - toString ,result - Cours(Titre: 8inf853 <raymond[2.85] = 3.0 , mathilde[3.85] = 3.7 >)
 Fin des traitements
