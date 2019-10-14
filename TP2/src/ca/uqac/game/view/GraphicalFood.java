@@ -10,7 +10,7 @@ public class GraphicalFood extends Food{
 	
 	public static int FOOD_SIZE = 5;
 	private Field field;
-	private Point2D foodPosition;
+	
 	
 	
 	public GraphicalFood(Field field,Point2D foodPosition) {
@@ -31,6 +31,12 @@ public class GraphicalFood extends Food{
 		gc.fillOval(this.getP().getX(), this.getP().getY(), FOOD_SIZE * 2, FOOD_SIZE * 2);
 	}
 
+	public void Remove() {
+		GraphicsContext gc = this.field.GetGraphics();
+		gc.setFill(Color.BLACK);
+		gc.fillOval(this.getP().getX(), this.getP().getY(), FOOD_SIZE * 2, FOOD_SIZE * 2);
+	
+	}
 	
 
 	

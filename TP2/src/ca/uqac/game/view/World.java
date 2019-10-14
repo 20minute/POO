@@ -1,6 +1,8 @@
 package ca.uqac.game.view;
 
 
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,12 +18,13 @@ import javafx.stage.Stage;
 
 
 
+
+
  
 public class World extends Application {
 	
 	final static int width = 600;
 	final static int height = 700;
-	
 	
 	
 	
@@ -45,25 +48,30 @@ public class World extends Application {
         GraphicsContext gc = field.GetGraphics();
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, height, width);
+        
+        
+        GraphicalFoodListener gfl = new GraphicalFoodListener();
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
                 GraphicalPigeon gp = new GraphicalPigeon(field);
-                
+                gfl.addObserver(gp);
                 Thread t = new Thread(gp);
                 t.start();
             }
         });
         
         
+       
         
         field.setOnMouseClicked(event -> {
             double x = event.getX(), y = event.getY();
             Point2D foodPosition = new Point2D(x,y);
             GraphicalFood gf = new GraphicalFood(field,foodPosition);
-            
+            gfl.addNewFood(gf);
         });
+        
+       
         HBox hBox = new HBox(btn,btn2);
         VBox vBox = new VBox(hBox, field);
         Scene scene = new Scene(vBox, height, width, Color.BLACK);

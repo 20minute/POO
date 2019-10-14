@@ -10,15 +10,14 @@ import java.util.Random;
 public class Pigeon {
 
 	
-	public static double SPEED_PIXEL = 2;
+	public static double SPEED_PIXEL = 1;
 	
 	private Point2D p;		// Position of the pigeon
 	private Point2D upper;	// Position UpperLeft corner
 	private Point2D lower;	// Position LowerRight corner
 	public static double PIGEON_SIZE = 10.0;
 	
-	private ArrayList<Food> foods = new ArrayList<Food>();
-	
+	private Point2D newFoodPosition;
 	
 	/* 
 	 * height, width : field size
@@ -33,42 +32,35 @@ public class Pigeon {
 		Random random = new Random();
 		double x = PIGEON_SIZE + (width - 2 * PIGEON_SIZE)  * random.nextDouble();
 		double y = PIGEON_SIZE + (height -2 * PIGEON_SIZE)  * random.nextDouble();
-		this.p = new Point2D(x,y);
+		this.p = new Point2D(Math.floor(x),Math.floor(y));
+		
 		
 	}
 
-	public void Move() {
-		Food food = getNewFood();
-		if(food!=null) {
-			if(food.getP().getX() > p.getX()) {
+	public void Move(Point2D newFoodPosition) {
+		
+		if(newFoodPosition!=null) {
+			if(newFoodPosition.getX() > p.getX()) {
 				this.setP(new Point2D(p.getX()+SPEED_PIXEL,p.getY()));
-			}else if(food.getP().getX() < p.getX()){
+			}else if(newFoodPosition.getX() < p.getX()){
 				this.setP(new Point2D(p.getX()-SPEED_PIXEL,p.getY()));
 			}
 			
-			if(food.getP().getY() > p.getY()) {
+			if(newFoodPosition.getY() > p.getY()) {
 				this.setP(new Point2D(p.getX(),p.getY()+SPEED_PIXEL));
-			}else if(food.getP().getY() < p.getY()){
+			}else if(newFoodPosition.getY() < p.getY()){
 				this.setP(new Point2D(p.getX(),p.getY()-SPEED_PIXEL));
 			}
 		}
 		
 	}
 
-	public void AddFood(Food food) {
-		foods.add(food);
-	}
-	
-	public Food getNewFood() {
-		int index = foods.size()-1;
-		if(index < 0 ) {
-			return null;
-		}else {
-			return foods.get(index);
-
+	public boolean EatFood(Point2D newFoodPosition) {
+		if(p.getX() == newFoodPosition.getX() && p.getY() == newFoodPosition.getY()) {
+			return true;
 		}
+		return false;
 	}
-	
 	public Point2D getP() {
 		return p;
 	}

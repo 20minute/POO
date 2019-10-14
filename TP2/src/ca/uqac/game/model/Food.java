@@ -20,10 +20,6 @@ public class Food {
 		return p;
 	}
 
-	public void setP(Point2D p) {
-		this.p = p;
-	}
-
 	public boolean isFresh() {
 		return isFresh;
 	}
