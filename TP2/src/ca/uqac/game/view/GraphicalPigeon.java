@@ -7,6 +7,7 @@ import java.util.Observer;
 import ca.uqac.game.model.Pigeon;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 
 
@@ -37,7 +38,7 @@ public class GraphicalPigeon extends Pigeon implements Observer,Runnable {
 	public void Remove() {
 		GraphicsContext gc = this.field.GetGraphics();
 		gc.setFill(Color.BLACK);
-		gc.fillOval(this.getP().getX(), this.getP().getY(), this.PIGEON_SIZE * 2.5, this.PIGEON_SIZE * 2.5);
+		gc.fillOval(this.getP().getX(), this.getP().getY(), this.PIGEON_SIZE * 2, this.PIGEON_SIZE * 2);
 	
 	}
 	

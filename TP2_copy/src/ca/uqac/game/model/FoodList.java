@@ -1,24 +1,21 @@
-package ca.uqac.game.view;
+package ca.uqac.game.model;
 
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class GraphicalFoodListener extends Observable {
+public class FoodList extends Observable {
 
 	private ArrayList<GraphicalFood> list;
-	//private GraphicalFood freshFood;
+	private boolean isScared;
 	
-	public GraphicalFoodListener() {
+	public FoodList() {
 		list = new ArrayList<GraphicalFood>();
 	}
 	
 	public void addNewFood(GraphicalFood gf) {
-		if(gf.isFresh()) {
 			list.add(gf);
 			setChanged();
 			notifyObservers();
-		}
-		
 	}
 	public ArrayList<GraphicalFood> getFoodList(){
 		return list;
@@ -35,6 +32,16 @@ public class GraphicalFoodListener extends Observable {
 		list.remove(index);
 		setChanged();
 		notifyObservers();
+	}
+	
+	public void setScare(boolean isScared) {
+		this.isScared = isScared;
+		setChanged();
+		notifyObservers();
+	}
+	
+	public boolean getScare() {
+		return isScared;
 	}
 	
 }

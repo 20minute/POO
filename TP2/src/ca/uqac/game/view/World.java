@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ca.uqac.game.controller.*;
 
 
 
@@ -39,7 +40,7 @@ public class World extends Application {
         
         
         Button btn = new Button();
-        btn.setText("Add a pigeon");
+        btn.setText("Add pigeons");
         
         Button btn2 = new Button();
         btn2.setText("Scare pigeons");
@@ -50,16 +51,14 @@ public class World extends Application {
         gc.fillRect(0, 0, height, width);
         
         
-        GraphicalFoodListener gfl = new GraphicalFoodListener();
+        Command c = new Command();
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                GraphicalPigeon gp = new GraphicalPigeon(field);
-                gfl.addObserver(gp);
-                Thread t = new Thread(gp);
-                t.start();
+                    c.createGraphicalPigeon(field);
             }
         });
+        
         
         
        
@@ -67,8 +66,7 @@ public class World extends Application {
         field.setOnMouseClicked(event -> {
             double x = event.getX(), y = event.getY();
             Point2D foodPosition = new Point2D(x,y);
-            GraphicalFood gf = new GraphicalFood(field,foodPosition);
-            gfl.addNewFood(gf);
+            c.createGraphicalFood(field, foodPosition);
         });
         
        
