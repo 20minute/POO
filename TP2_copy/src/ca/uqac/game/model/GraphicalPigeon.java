@@ -3,6 +3,7 @@ package ca.uqac.game.model;
 import java.util.Observable;
 import java.util.Observer;
 
+import ca.uqac.game.util.Event;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -12,15 +13,17 @@ public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
 
 	private Circle c;
 	private Pane pigeonPane;
-	private FoodList foodUpdate;
+	private Event event;
 	public GraphicalPigeon(Pane pigeonPane) {
 		
 		super(pigeonPane.getPrefHeight(), pigeonPane.getPrefWidth());
 		this.pigeonPane = pigeonPane;
-		// TODO Auto-generated constructor stub
 		this.c = new Circle();
 	}
 
+	/**
+	 * add a pigeon on the pane
+	 */
 	public void Draw()
 	{
 		c.setCenterX(this.getP().getX());
@@ -30,20 +33,26 @@ public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
 		pigeonPane.getChildren().add(c);
 	}
 	
+	/**
+	 * remove a pigeon on the pane
+	 */
 	public void Remove() {
 		pigeonPane.getChildren().remove(c);
 	}
 
+	/* 
+	 * update event
+	 * (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
-		foodUpdate = (FoodList) o;
-		
+		event = (Event) o;
 	}
 	
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
 			while(true) {
 				try{
@@ -52,25 +61,23 @@ public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
 					}
 					
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Platform.runLater(()->{
 					Remove();
-					if(foodUpdate!=null) {
-						if(foodUpdate.getScare()) {
-							Move();
+					if(event!=null) {
+						if(event.getScare()) {
+							Move(); 
 							
 						}
 						else {
-							if(foodUpdate.getFoodList().size() != 0) {
-								Move(foodUpdate.getNewFood().getP());
-								
-								if(this.canEatFood(foodUpdate.getNewFood().getP())) {
-									foodUpdate.removeNewFood();
+							if(event.getFoodList().size() != 0) {
+								Move(event.getNewFood().getP());
+								if(this.canEatFood(event.getNewFood().getP())) {
+									event.removeNewFood();
 								}
-							}else if(foodUpdate.getFoodList().size() == 0) {
-								System.out.println("u can have a break");
+							}else if(event.getFoodList().size() == 0) {
+								// do nothing
 							}
 						}
 					}

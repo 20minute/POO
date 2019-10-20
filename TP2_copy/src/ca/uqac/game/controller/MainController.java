@@ -1,16 +1,9 @@
 package ca.uqac.game.controller;
 
-
-
-
-import ca.uqac.game.model.FoodList;
 import ca.uqac.game.model.GraphicalFood;
 import ca.uqac.game.model.GraphicalPigeon;
-import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
+import ca.uqac.game.util.Event;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -26,16 +19,23 @@ public class MainController {
     private Button addPigeon;
     @FXML
     private Pane pigeonPane;
-    private FoodList fl;
+    private Event fl;
     private boolean flag = false;
+    /**
+     * initialize the background color of the scene
+     */
     @FXML
     private void initialize() 
     {
     	BackgroundFill fill = new BackgroundFill(Color.BLACK,CornerRadii.EMPTY, Insets.EMPTY);
     	pigeonPane.setBackground(new Background(fill));
-    	fl = new FoodList();
+    	fl = new Event();
     	
     }
+    /**
+     * create a new object of graphicalPigeon then put it in thread
+     * @param event
+     */
     @FXML
     protected void handleButtonAction(ActionEvent event) {
     	
@@ -43,51 +43,12 @@ public class MainController {
     	fl.addObserver(gp);
     	Thread t = new Thread(gp);
     	t.start();
-    	
-    	
-//    	backgroundThread = new Service<Void>() {
-//    		@Override 
-//    		protected Task<Void> createTask(){
-//    			return new Task<Void>() {
-//    				@Override 
-//    				protected Void call() throws Exception {
-//    					final CountDownLatch latch = new CountDownLatch(1);
-//    					Platform.runLater(new Runnable() {
-//    						@Override
-//    						public void run() {
-//    							try {
-//    								double height = pigeonPane.getPrefHeight();
-//    						    	double width = pigeonPane.getPrefWidth();
-//    						    	GraphicalPigeon gp = new GraphicalPigeon(height,width);
-//    						    	pigeonPane.getChildren().add(gp.Draw());
-//    							}
-//    							finally {
-//    								latch.countDown();
-//    							}
-//    						}
-//    					});
-//    					latch.await();
-//    					
-//    					
-//    					
-//    					
-//    					return null;
-//    				}
-//    				
-//    			};
-//    		}
-//    	};
-////    	backgroundThread.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-////    		@Override 
-////    		public void handle(WorkerStateEvent e) {
-////    			System.out.println("ok");
-////    		}
-////    	});
-//    	
-//    	//pigeonPane.accessibleRoleProperty().bind(backgroundThread.getValue());
-//    	backgroundThread.start();
     }
     
+    /**
+     * click this button to start or stop scaring the pigeons
+     * @param event
+     */
     @FXML 
     protected void handleButtonAction2(ActionEvent event) {
     	
@@ -96,6 +57,10 @@ public class MainController {
     	
     }
     
+    /**
+     * get the position of the mouse and create a new object of graphicalFood
+     * @param event
+     */
     @FXML 
     protected void handleOnMouseClicked(MouseEvent event)
     {

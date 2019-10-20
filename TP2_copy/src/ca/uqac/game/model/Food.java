@@ -5,11 +5,13 @@ import java.util.Random;
 
 public class Food {
 
-	
-
 	private boolean isFresh ;
 	private Point2D p;
 	
+	/**
+	 * 
+	 * @param p position of food
+	 */
 	public Food(Point2D p) {
 		this.p = p;
 		Random r = new Random();

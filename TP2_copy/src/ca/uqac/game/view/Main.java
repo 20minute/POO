@@ -16,12 +16,11 @@ public class Main extends Application {
             Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
             Scene scene = new Scene(root, 630, 600);
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Hello World");
+            primaryStage.setTitle("A Pigeon Game");
             primaryStage.show();
         } catch(Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public static void main(String[] args) {
