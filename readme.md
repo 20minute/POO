@@ -31,11 +31,12 @@ If your jdk version <11, you can run it directly, if not you need to download an
 
 <h1>How to play</h1>
 
-1.click on the button "add a pigeon".
-2.click on the black screen in order to add new food for the pigeons.
-3.if you want to scare the pigeons, you can click on the button "scare or stop", click it again to stop this behavior.
+1. click on the button "add a pigeon".
+2. click on the black screen in order to add new food for the pigeons.
+3. if you want to scare the pigeons, you can click on the button "scare or stop", click it again to stop this behavior.
 
 <h1>Some bugs and points can be improved</h1>
+
 1. a new pigeon added into the game world does not know the food immediately.
 2. the velocity of pigeon is relatively slow.
 3. we don't pay attention on the collison of pigeons.
