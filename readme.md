@@ -31,9 +31,9 @@ If your jdk version <11, you can run it directly, if not you need to download an
 
 <h1>How to play</h1>
 
-1. click on the button "add a pigeon".
+1. click on the button "**_add a pigeon_**".
 2. click on the black screen in order to add new food for the pigeons.
-3. if you want to scare the pigeons, you can click on the button "scare or stop", click it again to stop this behavior.
+3. if you want to scare the pigeons, you can click on the button "**_scare or stop_**", click it again to stop this behavior.
 
 <h1>Some bugs and points can be improved</h1>
 
