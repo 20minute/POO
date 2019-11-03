@@ -40,3 +40,10 @@ If your jdk version <11, you can run it directly, if not you need to download an
 1. a new pigeon added into the game world does not know the food immediately.
 2. the velocity of pigeon is relatively slow.
 3. we don't pay attention on the collison of pigeons.
+
+```javascript
+  var uqac = {
+    author1  : "Lijun Zheng",
+    author2  : "Paul Fussien"
+  }
+```
