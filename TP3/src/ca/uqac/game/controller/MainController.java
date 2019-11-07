@@ -2,10 +2,12 @@ package ca.uqac.game.controller;
 
 import ca.uqac.game.model.GraphicalFood;
 import ca.uqac.game.model.GraphicalPigeon;
-import ca.uqac.game.util.Event;
+import ca.uqac.game.util.Algorithme;
+import ca.uqac.game.util.FoodList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BackgroundFill;
@@ -19,8 +21,8 @@ public class MainController {
     private Button addPigeon;
     @FXML
     private Pane pigeonPane;
-    private Event fl;
-    private boolean flag = false;
+    private FoodList fl;
+    private Algorithme algo;
     /**
      * initialize the background color of the scene
      */
@@ -29,7 +31,9 @@ public class MainController {
     {
     	BackgroundFill fill = new BackgroundFill(Color.BLACK,CornerRadii.EMPTY, Insets.EMPTY);
     	pigeonPane.setBackground(new Background(fill));
-    	fl = new Event();
+    	fl = new FoodList();
+    	algo = new Algorithme();
+    	fl.addObserver(algo);
     	
     }
     /**
@@ -38,23 +42,17 @@ public class MainController {
      */
     @FXML
     protected void handleButtonAction(ActionEvent event) {
-    	
-    	GraphicalPigeon gp = new GraphicalPigeon(pigeonPane);
-    	fl.addObserver(gp);
+    	Point2D p = fl.getFoodList().get(0).getP();
+    	GraphicalPigeon gp = new GraphicalPigeon(pigeonPane, p);
+    	//algo.addObserver(gp);
+    	//algo.algo3();
+    	algo.NodesToFood();
     	Thread t = new Thread(gp);
+    	
     	t.start();
     }
     
-    /**
-     * click this button to start or stop scaring the pigeons
-     * @param event
-     */
-    @FXML 
-    protected void handleButtonAction2(ActionEvent event) {
-    	
-    	flag =!flag;
-    	fl.setScare(flag);
-    }
+   
     
     /**
      * get the position of the mouse and create a new object of graphicalFood

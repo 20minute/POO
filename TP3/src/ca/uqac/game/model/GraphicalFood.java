@@ -25,19 +25,7 @@ public class GraphicalFood extends Food{
 		c.setCenterX(this.getP().getX());
 		c.setCenterY(this.getP().getY());
 		c.setRadius(FOOD_SIZE);
-		if(this.isFresh()) {
-			c.setFill(Color.GREEN);
-		}else {
-			c.setFill(Color.BROWN);
-		}
+		c.setFill(Color.GREEN);
 		foodPane.getChildren().add(c);
 	}
-
-	public void Remove() {
-		if(this.isFresh()) {
-			foodPane.getChildren().remove(c);		
-
-		}
-	}
-
 }

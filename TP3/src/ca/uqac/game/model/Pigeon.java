@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class Pigeon {
 
-	public static double SPEED_PIXEL = 1;
+	public static double SPEED_PIXEL = 10.0;
 	
 	private Point2D p;		// Position of the pigeon
 	public static double PIGEON_SIZE = 10.0;
@@ -32,6 +32,10 @@ public class Pigeon {
 		this.p = new Point2D(Math.floor(x),Math.floor(y));
 		
 		
+	}
+	
+	public Pigeon(Point2D p) {
+		this.p = p;
 	}
 
 	/**
@@ -76,7 +80,9 @@ public class Pigeon {
 	}
 
 	public boolean canEatFood(Point2D newFoodPosition) {
-		if(p.getX() == newFoodPosition.getX() && p.getY() == newFoodPosition.getY()) {
+		double x = Math.abs(p.getX() - newFoodPosition.getX());
+		double y = Math.abs(p.getY() - newFoodPosition.getY());
+		if(x < 11 && y < 11) {
 			return true;
 		}
 		return false;

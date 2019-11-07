@@ -1,22 +1,31 @@
 package ca.uqac.game.model;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import ca.uqac.game.util.Event;
+import ca.uqac.game.util.Algorithme;
+import ca.uqac.game.util.FoodList;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
+public class GraphicalPigeon extends Pigeon implements Runnable{
 
 	private Circle c;
 	private Pane pigeonPane;
-	private Event event;
+	
 	public GraphicalPigeon(Pane pigeonPane) {
 		
 		super(pigeonPane.getPrefHeight(), pigeonPane.getPrefWidth());
+		this.pigeonPane = pigeonPane;
+		this.c = new Circle();
+	}
+	
+	public GraphicalPigeon(Pane pigeonPane, Point2D p) {
+		super(p);
 		this.pigeonPane = pigeonPane;
 		this.c = new Circle();
 	}
@@ -40,19 +49,19 @@ public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
 		pigeonPane.getChildren().remove(c);
 	}
 
-	/* 
-	 * update event
-	 * (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	/**
+	 * get the last one in the list
+	 * @return GraphicalFood
 	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		event = (Event) o;
+	public GraphicalFood getNewFood(ArrayList<GraphicalFood> list) {
+		int index = list.size()-1;
+		return list.get(index);
 	}
 	
+	
+
 	@Override
 	public void run() {
-		
 			while(true) {
 				try{
 					synchronized (this) {
@@ -64,24 +73,19 @@ public class GraphicalPigeon extends Pigeon implements Runnable, Observer{
 				}
 				Platform.runLater(()->{
 					Remove();
-					if(event!=null) {
-						if(event.getScare()) {
-							Move(); 
-							
-						}
-						else {
-							if(event.getFoodList().size() != 0) {
-								Move(event.getNewFood().getP());
-								if(this.canEatFood(event.getNewFood().getP())) {
-									event.removeNewFood();
-								}
-							}else if(event.getFoodList().size() == 0) {
-								// do nothing
+						ArrayList<GraphicalFood> list = Algorithme.result;
+						if(list.size() != 0) {
+							Move(list.get(0).getP());
+							if(this.canEatFood(list.get(0).getP())) {
+								list.remove(0);
 							}
+						}else if(list.size() == 0) {
+							// do nothing
 						}
-					}
 					Draw();
 				});
 			}
 	}
+
+	
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 
 public class Food {
 
-	private boolean isFresh ;
 	private Point2D p;
 	
 	/**
@@ -14,15 +13,9 @@ public class Food {
 	 */
 	public Food(Point2D p) {
 		this.p = p;
-		Random r = new Random();
-		isFresh = r.nextBoolean();
 	}
 	
 	public Point2D getP() {
 		return p;
-	}
-
-	public boolean isFresh() {
-		return isFresh;
 	}
 }
