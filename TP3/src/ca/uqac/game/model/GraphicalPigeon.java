@@ -62,30 +62,29 @@ public class GraphicalPigeon extends Pigeon implements Runnable{
 
 	@Override
 	public void run() {
-			while(true) {
-				try{
-					synchronized (this) {
-						Thread.sleep(300);		
-					}
-					
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+		while(true) {
+			try{
+				synchronized (this) {
+					Thread.sleep(300);		
 				}
-				Platform.runLater(()->{
-					Remove();
-						ArrayList<GraphicalFood> list = Algorithme.result;
-						if(list.size() != 0) {
-							Move(list.get(0).getP());
-							if(this.canEatFood(list.get(0).getP())) {
-								list.remove(0);
-							}
-						}else if(list.size() == 0) {
-							// do nothing
-						}
-					Draw();
-				});
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			Platform.runLater(()->{
+				Remove();
+				ArrayList<GraphicalFood> list = Algorithme.result;
+				if(list == null) {return;}
+				if(list.size() != 0) {
+					Move(list.get(0).getP());
+					if(this.canEatFood(list.get(0).getP())) {
+						list.remove(0);
+					}
+				}else if(list.size() == 0) {
+					// do nothing
+				}
+				Draw();
+			});
+		}
 	}
-
-	
 }

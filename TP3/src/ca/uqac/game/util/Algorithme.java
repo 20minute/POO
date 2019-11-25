@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Algorithme implements Observer{
 
-	private static double variable = 300.0;
+	private static double variable = 30.0;
 	
 	public static ArrayList<GraphicalFood> result;
 	
@@ -82,10 +82,8 @@ public class Algorithme implements Observer{
 			return result;
 		}catch(Exception e) {
 			e.printStackTrace();
-			
 		}
 		return null;
-
 	}
 	
 	/**
@@ -108,14 +106,20 @@ public class Algorithme implements Observer{
 		}
 		while(!f.getP().equals(B.getP()));
 	}
-	/////////////////////////A STAR////////////////////////
+	/////////////////////////A STAR ALGORITHME////////////////////////
 	private ArrayList<Node> getSurroundNodes(Node currentNode){
-		ArrayList<GraphicalFood> surroundFood = algo1(currentNode.getFood(), variable);
-		ArrayList<Node> surroundNodes = new ArrayList<>();
-		for(GraphicalFood f:surroundFood) {
-			surroundNodes.add(new Node(f));
+		try {
+			ArrayList<GraphicalFood> surroundFood = algo1(currentNode.getFood(), variable);
+			ArrayList<Node> surroundNodes = new ArrayList<>();
+		
+			for(GraphicalFood f:surroundFood) {
+				surroundNodes.add(new Node(f));
+			}
+			return surroundNodes;
 		}
-		return surroundNodes;
+		catch(NullPointerException e) {
+			return null;
+		}
 	}
 	
 	public ArrayList<Node> searchRoad() {
@@ -128,65 +132,58 @@ public class Algorithme implements Observer{
 		boolean isGetResult = false;
 		//1. put start node in the openList 
 		openList.add(startNode);
-		
-		do {
-			// get current Node from openList to closeList
-			Node currentNode = openList.get(0);
-			openList.remove(0);
-			closeList.add(currentNode);
-			// get reachable Nodes for current Node
-			ArrayList<Node> surroundNodes = getSurroundNodes(currentNode);
-			for(Node n : surroundNodes){
-				// whether in the closeList
-				boolean isExistList = closeList.contains(n);
-				
-				if(!isExistList) {
-					//calculate G 
-					double G = currentNode.G + this.getDistance(currentNode.getFood().getP(), n.getFood().getP());
-					//if this node is not in the openList, then calculate H , F and put them in the openList
-					if(!openList.contains(n)) {
-						//double s = Math.floor(this.getDistance(n.f.getP(),endNode.f.getP()) / variable);
-						n.H = this.getDistance(n.getFood().getP(),endNode.getFood().getP());
-						n.G = G;
-						n.F = n.H + n.G;
-						n.father = currentNode;
-						openList.add(n);
-					}else {
-						// recalculate G and F
-						int index = openList.indexOf(n);
-						if(G <  openList.get(index).G ) {
-							openList.get(index).father = currentNode;
-							openList.get(index).G = G;
-							openList.get(index).F = G + openList.get(index).H;
+			do {
+				// get current Node from openList to closeList
+				Node currentNode = openList.get(0);
+				openList.remove(0);
+				closeList.add(currentNode);
+				// get reachable Nodes for current Node
+				ArrayList<Node> surroundNodes = getSurroundNodes(currentNode);
+				if(surroundNodes == null) {break;}
+				for(Node n : surroundNodes){
+					// whether in the closeList
+					boolean isExistList = closeList.contains(n);
+					
+					if(!isExistList) {
+						//calculate G 
+						double G = currentNode.G + this.getDistance(currentNode.getFood().getP(), n.getFood().getP());
+						//if this node is not in the openList, then calculate H , F and put them in the openList
+						if(!openList.contains(n)) {
+							//double s = Math.floor(this.getDistance(n.f.getP(),endNode.f.getP()) / variable);
+							n.H = this.getDistance(n.getFood().getP(),endNode.getFood().getP());
+							n.G = G;
+							n.F = n.H + n.G;
+							n.father = currentNode;
+							openList.add(n);
+						}else {
+							// recalculate G and F
+							int index = openList.indexOf(n);
+							if(G <  openList.get(index).G ) {
+								openList.get(index).father = currentNode;
+								openList.get(index).G = G;
+								openList.get(index).F = G + openList.get(index).H;
+							}
+						}
+					}
+					if(openList.isEmpty()) {
+						System.out.println("No road");
+						break;
+					}
+					if(openList.contains(startNode)) {
+						openList.remove(startNode);
+					}
+					// set order of openList by F
+					openList.sort((Node o1,Node o2)-> Double.compare(o1.F, o2.F));
+					
+					for(Node tmpNode : openList){
+						if(tmpNode.getFood().getP().equals(endNode.getFood().getP())) {
+							isGetResult = true;
+							resultIndex = openList.indexOf(tmpNode);
+							closeList.add(tmpNode);
 						}
 					}
 				}
-				
-				if(openList.isEmpty()) {
-					System.out.println("No road");
-					break;
-				}
-				if(openList.contains(startNode)) {
-					openList.remove(startNode);
-				}
-				
-				// set order of openList by F
-				openList.sort((Node o1,Node o2)-> Double.compare(o1.F, o2.F));
-				
-
-				for(Node tmpNode : openList){
-					if(tmpNode.getFood().getP().equals(endNode.getFood().getP())) {
-						isGetResult = true;
-						resultIndex = openList.indexOf(tmpNode);
-						closeList.add(tmpNode);
-					}
-				}
-				
-				
-			}
-			
-		}while(!isGetResult);
-		
+			}while(!isGetResult);
 		
 		if(resultIndex == -1) {
 			return null;
@@ -209,18 +206,19 @@ public class Algorithme implements Observer{
 	}
 	
 	public void NodesToFood() {
-		ArrayList<Node> nodes = new ArrayList<>();
-		ArrayList<GraphicalFood> list = new ArrayList<>();
-		nodes = searchRoad();
-		for(Node n : nodes) {
-			list.add(n.getFood());
+		try {
+			ArrayList<Node> nodes = new ArrayList<>();
+			ArrayList<GraphicalFood> list = new ArrayList<>();
+			nodes = searchRoad();
+			for(Node n : nodes) {
+				list.add(n.getFood());
+			}
+			result = list;
+			Collections.reverse(result);
+		}catch(Exception e){
+			return;
 		}
-		result = list;
-		Collections.reverse(result);
 	}
-	
-	
-
 }
 
 class Node{
