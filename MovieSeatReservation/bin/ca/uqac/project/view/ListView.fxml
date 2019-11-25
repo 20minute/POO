@@ -1,0 +1,3 @@
+
+
+<fx:root type="javafx.scene.control.ListView" xmlns:fx="http://javafx.com/fxml" fx:id = "sessionList"/>
