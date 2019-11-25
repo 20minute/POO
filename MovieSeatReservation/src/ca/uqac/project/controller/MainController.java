@@ -8,11 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import application.DataBase;
-import ca.uqac.project.model.Conversion;
-import ca.uqac.project.model.Movie;
-import ca.uqac.project.model.Session;
-import ca.uqac.project.model.Time;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+
+import application.*;
+import ca.uqac.project.model.*;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,13 +24,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -42,8 +49,9 @@ public class MainController extends BorderPane{
 	private	ListView<Session> sessionList;
 	@FXML
 	private	GridPane seatPane;
-	private Button[][] seats = new Button[Session.NUM_ROWS][Session.NUM_COLS];
-	
+	private Button[][] seatingButtons = new Button[Session.NUM_ROWS][Session.NUM_COLS];
+	@FXML
+	private CheckBox complementary;
 	
 	@FXML
 	private ToggleGroup group1;
@@ -53,6 +61,18 @@ public class MainController extends BorderPane{
 	private RadioButton child;
 	@FXML
 	private RadioButton elderly;
+	@FXML
+	private Button newButton;
+	@FXML
+	private Button cancelButton;
+	@FXML
+	private Button bookButton;
+	@FXML
+	private Button exitButton;
+	
+    private ArrayList<SeatReservation> currentReservation;
+    private Session currentSession;
+
 	private ArrayList<Session> movies = new ArrayList<Session>();
     private ObservableList<Session> observableList = FXCollections.observableArrayList();
 
@@ -67,6 +87,8 @@ public class MainController extends BorderPane{
     }
     
     public MainController(){
+    	currentReservation = new ArrayList();
+        currentReservation.clear();
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/MainView.fxml"));
 	        fxmlLoader.setRoot(this);
 	        fxmlLoader.setController(this);
@@ -77,38 +99,119 @@ public class MainController extends BorderPane{
 	        }
     }
     private void initializeSeat() {
-    	//Creating the mouse event handler 
-    	
     	for(int i = 0; i < Session.NUM_ROWS; i++) {
     		for(int j = 0; j < Session.NUM_COLS; j++) {
+    			int tmpI = i;
+    			int tmpJ = j;
     			String text = Character.toString(Conversion.convertIndexToRow(i)) + j;
-    			seats[i][j] = new Button();
-    			seats[i][j].setText(text);
-    			seats[i][j].setPrefSize(120, 60);
-    			seats[i][j].setStyle("-fx-background-color: #1282A2; -fx-border-color: #034078; -fx-text-fill: #FEFCFB; -fx-font-size:14;");
-    			seats[i][j].setDisable(false);
-    			seats[i][j].setOnMouseClicked((MouseEvent e)->{
+    			seatingButtons[i][j] = new Button();
+    			seatingButtons[i][j].setText(text);
+    			seatingButtons[i][j].setPrefSize(120, 65);
+    			seatingButtons[i][j].setStyle("-fx-background-color: #1282A2; -fx-border-color: #034078; -fx-text-fill: #FEFCFB; -fx-font-size:14;");
+    			seatingButtons[i][j].setDisable(true);
+    			seatingButtons[i][j].setOnMouseClicked((MouseEvent e)->{
     				
-    				RadioButton selectedRadioButton =
-    				        (RadioButton) group1.getSelectedToggle();
-    				if(selectedRadioButton == null) {
+    				if(group1.getSelectedToggle() == null) {
     					System.out.println("Please select the type of ticket below");
     				}else {
-    					if(selectedRadioButton == adult) {
-    						//TODO ss
-    					}else if(selectedRadioButton == child) {
-    						//TODO ss
-    					}else if(selectedRadioButton == elderly) {
-    						//TODO ss
+    					SeatReservation reservation;
+    					if(adult.isSelected()) {
+    						reservation = new AdultReservation(Conversion.convertIndexToRow(tmpI), tmpJ);
+                            reservation.setComplementary(complementary.isPressed());
+                            this.currentReservation.add(reservation);
+    					}else if(child.isSelected()) {
+    						reservation = new ChildReservation(Conversion.convertIndexToRow(tmpI), tmpJ);
+                            reservation.setComplementary(complementary.isPressed());
+                            this.currentReservation.add(reservation);
+    					}else if(elderly.isSelected()) {
+    						reservation = new ElderlyReservation(Conversion.convertIndexToRow(tmpI), tmpJ);
+                            reservation.setComplementary(complementary.isPressed());
+                            this.currentReservation.add(reservation);
     					}
+    					 updateSeats();
     				}
     			});
-    			seatPane.add(seats[i][j], j, i);
+    			seatPane.add(seatingButtons[i][j], j, i);
     		}
     	}
     }
     
-    private void setListView(){
+
+    /**
+     *  Updating the seats depending whether they have already been booked, being booked, and if the seat reservation list by the user is empty.
+     */
+    private void updateSeats()
+    {
+        // Update the buttons to set if there's anything inside the current reservation
+        if (this.currentReservation.isEmpty())
+        {
+            newButton.setDisable(false);
+            cancelButton.setDisable(true);
+            bookButton.setDisable(true);
+        }
+        else
+        {
+        	newButton.setDisable(true);
+            cancelButton.setDisable(false);
+            bookButton.setDisable(false);
+        }
+        
+        for(int row = 0; row < Session.NUM_ROWS;row++) {
+        	for(int col = 0; col < Session.NUM_COLS;col++) {
+                //seatingButtons[row][col].setStyle("-fx-border-color: #034078;");
+                seatingButtons[row][col].setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
+
+                if (currentSession.getSeat(Conversion.convertIndexToRow(row), col) instanceof AdultReservation)
+                {
+                    this.seatingButtons[row][col].setDisable(true);
+                    seatingButtons[row][col].setStyle("-fx-background-color: #001F54; -fx-text-fill: #FEFCFB;");
+                }
+                else if (currentSession.getSeat(Conversion.convertIndexToRow(row), col) instanceof ElderlyReservation)
+                {
+                    this.seatingButtons[row][col].setDisable(true);
+                    seatingButtons[row][col].setStyle("-fx-background-color: #F2F4F3; -fx-text-fill: #034078;");
+                }
+                else if (currentSession.getSeat(Conversion.convertIndexToRow(row), col) instanceof ChildReservation)
+                {
+                    this.seatingButtons[row][col].setDisable(true);
+                    seatingButtons[row][col].setStyle("-fx-background-color: #F7B32B; -fx-text-fill: #034078;");
+                }
+                else
+                {
+                    seatingButtons[row][col].setStyle("-fx-background-color: #1282A2; -fx-text-fill: #FEFCFB;");
+                }
+        	}
+        }
+        
+        // Printing and Setting Selected Current Reservations to update the buttons
+        int selectedRow, selectedCol;
+        for (int counter = 0; counter < this.currentReservation.size(); counter++)
+        {
+            selectedRow = Conversion.convertRowToIndex(this.currentReservation.get(counter).getRow());
+            selectedCol = this.currentReservation.get(counter).getCol();
+            seatingButtons[selectedRow][selectedCol].setDisable(true);
+            seatingButtons[selectedRow][selectedCol].setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
+            
+            //seatingButtons[selectedRow][selectedCol].setStyle("-fx-border-color: #034078;");
+            // If the current reservation made is an instanc eof adult reservation
+            if (this.currentReservation.get(counter) instanceof AdultReservation)
+            {
+                seatingButtons[selectedRow][selectedCol].setStyle("-fx-background-color: #001F54; -fx-text-fill: #FEFCFB;");
+            }
+            // If the current reservation made is an instance of elderly reservation
+            else if (this.currentReservation.get(counter) instanceof ElderlyReservation)
+            {
+                seatingButtons[selectedRow][selectedCol].setStyle("-fx-background-color: #F2F4F3; -fx-text-fill: #034078;");
+            }
+            // If the current reservation made is an instance of child  reservation
+            else if (this.currentReservation.get(counter) instanceof ChildReservation)
+            {
+                seatingButtons[selectedRow][selectedCol].setStyle("-fx-background-color: #F7B32B; -fx-text-fill: #034078;");
+            }
+        }
+    }
+
+	private void setListView(){
 
     	DataBase bs = new DataBase();
     	movies= bs.getSessions();
@@ -119,8 +222,113 @@ public class MainController extends BorderPane{
         sessionList.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Session> observable, Session oldValue, Session newValue)-> {
                 // Your action here
                 System.out.println("Selected item: " + newValue.toString());
+                //update title
                 title.setText(newValue.getMovie().getName());
+                //update seats
+                currentSession = newValue;
+                
+                disableTicketPanel(true);
+                disableMovieSeats(true); 
+                this.newButton.setDisable(false);
+                this.currentReservation.clear();
+                updateSeats();
         });
     }
+	
+	 /**
+     * Manages the Ticket Panel on whether they should be enabled or disabled.
+     * @param bool how should they be set.
+     */
+    private void disableTicketPanel(Boolean bool)
+    {
+        // Set Enable or Disable
+        adult.setDisable(bool);
+        elderly.setDisable(bool);
+        child.setDisable(bool);
+        complementary.setDisable(bool);
+    }
+    
+    /**
+     * Manages the Movie Seats on whether they should be enabled or disabled.
+     * @param bool how should they be set.
+     */
+    public void disableMovieSeats(Boolean bool)
+    {
+        for (int row = 0; row < Session.NUM_ROWS; row++)
+        {
+            for (int col = 0; col < Session.NUM_COLS; col++)
+            {
+                this.seatingButtons[row][col].setDisable(bool);
+            }
+        }
+    }
+	
+	@FXML 
+    protected void newEvent(MouseEvent event)
+    {
+		//this.newButton.setBackground(this.secondaryColor);
+        currentReservation.clear();
+        disableTicketPanel(false);
+        disableMovieSeats(false);
+        updateSeats();
+    }
+	
+	@FXML 
+    protected void bookEvent(MouseEvent event)
+    {
+		 float totalPrice = 0.0f;
+         int ticketCounter = 0;
+         // Checking if there's an item selected in the list
+         if (currentSession != null)
+         {
+             
+             // Check if applying bookings doesn't have any errors
+             if (currentSession.applyBookings(this.currentReservation))
+             {
+                 // Add all the tickets from all reservations
+                 for (; ticketCounter < this.currentReservation.size(); ticketCounter++)
+                 {
+                     totalPrice += this.currentReservation.get(ticketCounter).getTicketPrice();
+                 }
+                 System.out.println("TICKET COST IS: $" + totalPrice);
+                 //JOptionPane.showMessageDialog(this, "TICKET COST IS: $" + totalPrice, ticketCounter + " Tickets Requested", JOptionPane.INFORMATION_MESSAGE);
+             }
+             else
+             {
+                 // If there's an error, then there must be a child in a R-Rate film or without supervision
+                 System.out.println("Cannot book a child in R-Rated Movies or Unsupervised in M-Rated Movies");
+            	 //JOptionPane.showMessageDialog(this, "Cannot book a child in R-Rated Movies or Unsupervised in M-Rated Movies", ticketCounter + " Tickets Not Booked", JOptionPane.ERROR_MESSAGE);
+             }
+         }
+         else
+         {
+             // If a movie isn't selected
+             System.out.println("select a movie");
+
+             //JOptionPane.showMessageDialog(this, "Please select a movie first", "Booking Error", JOptionPane.ERROR_MESSAGE);
+         }
+         disableTicketPanel(true);
+         disableMovieSeats(true);
+         this.currentReservation.clear();
+         updateSeats();
+    }
+	
+	@FXML 
+    protected void cancelEvent(MouseEvent event)
+    {
+		 this.currentReservation.clear();
+         disableTicketPanel(true);
+         disableMovieSeats(true);
+         updateSeats();
+    }
+	
+	@FXML 
+    protected void exitEvent(MouseEvent event)
+    {
+		 this.currentReservation.clear();
+         System.exit(0);
+    }
+	
+	
 
 }

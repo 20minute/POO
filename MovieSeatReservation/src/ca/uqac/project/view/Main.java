@@ -15,16 +15,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         try {
             MainController main = new MainController();
+            main.getStylesheets().add(getClass().getResource("MainView.css").toExternalForm());
             primaryStage.setScene(new Scene(main));
             primaryStage.setTitle("Movie Reservation System");
-            primaryStage.setWidth(1000);
-            primaryStage.setHeight(800);
+            primaryStage.setWidth(800);
+            primaryStage.setHeight(650);
             primaryStage.show();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
-
     public static void main(String[] args) {
         launch(args);
     }

@@ -1,2 +1,20 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
+#adult{
+	-fx-background-color : #001F54;
+	-fx-border-radius    : 15px  ;
+}
+
+#child{
+	-fx-background-color : #F7B32B;
+	-fx-border-radius    : 15px  ;
+}
+
+#elderly{
+	-fx-background-color : #F2F4F3;
+	-fx-border-radius    : 15px  ;
+}
+
+.tool-bar{
+	-fx-background-color : #034078;
+}
