@@ -1,5 +1,6 @@
 package ca.uqac.project.model;
 
+
 public abstract class SeatReservation
 {
 
