@@ -22,6 +22,7 @@ public class DataBase {
 		movies.add(new Session(new Movie("Avengers: Infinity War", 'G'), new Time(2)));
 		movies.add(new Session(new Movie("Logan", 'R'), new Time(7, 30)));
 		movies.add(new Session(new Movie("Slenderman", 'M'), new Time(2, 30, 25)));
+		movies.add(new Session(new Movie("Avenger End", 'G'), new Time(1, 45, 30)));
 		movies.add(new Session(new Movie("Despasito", 'M'), new Time()));
 	}
 	

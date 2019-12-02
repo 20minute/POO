@@ -55,7 +55,8 @@ public class ListViewController extends ListView {
         myMovieSession[4] = new Session(new Movie("Avengers: Infinity War", 'G'), new Time(2));
         myMovieSession[5] = new Session(new Movie("Logan", 'R'), new Time(7, 30));
         myMovieSession[6] = new Session(new Movie("Slenderman", 'M'), new Time(2, 30, 25));
-        myMovieSession[7] = new Session(new Movie("Despasito", 'M'), new Time()); 
+        myMovieSession[7] = new Session(new Movie("Avenger End", 'G'), new Time(1, 45, 30));
+        myMovieSession[8] = new Session(new Movie("Despasito", 'M'), new Time()); 
         ArrayList<Session> movies = new ArrayList(Arrays.asList(myMovieSession));
         stringList.add("String 1");
         stringList.add("String 2");

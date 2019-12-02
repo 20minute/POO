@@ -55,7 +55,7 @@ public class GUI extends JPanel implements ActionListener, ListSelectionListener
     private JRadioButton adultButton, elderlyButton, childButton, invisibleRadioButton;
     private JButton newButton, bookButton, cancelButton, exitButton;
     private JCheckBox complementaryButton;
-    private JList moviePlayingList;
+    private JList<Object> moviePlayingList;
     private DefaultListModel model;
     private ArrayList<SeatReservation> currentReservation;
     private JButton[][] seatingButtons;
