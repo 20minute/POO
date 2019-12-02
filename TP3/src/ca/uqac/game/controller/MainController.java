@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -21,6 +22,8 @@ public class MainController {
     private Button addPigeon;
     @FXML
     private Pane pigeonPane;
+    @FXML
+    private CheckBox aStar;
     private FoodList fl;
     private Algorithme algo;
     /**
@@ -44,9 +47,11 @@ public class MainController {
     protected void handleButtonAction(ActionEvent event) {
     	Point2D p = fl.getFoodList().get(0).getP();
     	GraphicalPigeon gp = new GraphicalPigeon(pigeonPane, p);
-    	//algo.addObserver(gp);
-    	//algo.algo3();
-    	algo.NodesToFood();
+    	if(aStar.isSelected()) {
+        	algo.NodesToFood();
+    	}else {
+    		algo.algo3();
+    	}
     	Thread t = new Thread(gp);
     	
     	t.start();

@@ -8,7 +8,8 @@ import java.util.*;
 
 public class Algorithme implements Observer{
 
-	private static double variable = 30.0;
+	// maximum distance between two points 
+	private static double variable = 300.0;
 	
 	public static ArrayList<GraphicalFood> result;
 	
@@ -24,7 +25,6 @@ public class Algorithme implements Observer{
 		A = foodList.get(0);
 		B = foodList.get(foodList.size()-1);
 	}
-
 	
 	/**
 	 * un algorithme pour trouver, pour un noeud donn¨¦ ni, la liste des noeuds
@@ -107,6 +107,11 @@ public class Algorithme implements Observer{
 		while(!f.getP().equals(B.getP()));
 	}
 	/////////////////////////A STAR ALGORITHME////////////////////////
+	/**
+	 * @brief Find surrounding nodes for the current node.
+	 * @param currentNode
+	 * @return a list of node
+	 */
 	private ArrayList<Node> getSurroundNodes(Node currentNode){
 		try {
 			ArrayList<GraphicalFood> surroundFood = algo1(currentNode.getFood(), variable);
@@ -121,7 +126,10 @@ public class Algorithme implements Observer{
 			return null;
 		}
 	}
-	
+	/**
+	 * @brief find the road and put nodes in the list
+	 * @return a list of node
+	 */
 	public ArrayList<Node> searchRoad() {
 		ArrayList<Node> openList = new ArrayList<>();
 		ArrayList<Node> closeList = new ArrayList<>();
@@ -204,7 +212,9 @@ public class Algorithme implements Observer{
 			return resultList;
 		}
 	}
-	
+	/**
+	 * @brief algo4: A Star Driver.
+	 */
 	public void NodesToFood() {
 		try {
 			ArrayList<Node> nodes = new ArrayList<>();
@@ -221,6 +231,9 @@ public class Algorithme implements Observer{
 	}
 }
 
+/**
+ * Node Class for A Star algo.
+ */
 class Node{
 	private GraphicalFood f;
 	public double F,G,H;
