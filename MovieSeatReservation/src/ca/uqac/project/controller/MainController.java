@@ -23,7 +23,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -274,7 +277,7 @@ public class MainController extends BorderPane{
     }
 	
 	@FXML 
-    protected void bookEvent(MouseEvent event)
+    protected void bookEvent(ActionEvent event)
     {
 		 float totalPrice = 0.0f;
          int ticketCounter = 0;
@@ -291,20 +294,27 @@ public class MainController extends BorderPane{
                      totalPrice += this.currentReservation.get(ticketCounter).getTicketPrice();
                  }
                  System.out.println("TICKET COST IS: $" + totalPrice);
-                 //JOptionPane.showMessageDialog(this, "TICKET COST IS: $" + totalPrice, ticketCounter + " Tickets Requested", JOptionPane.INFORMATION_MESSAGE);
+                 Alert a1 = new Alert(AlertType.NONE,  
+                		 "TICKET COST IS: $" + totalPrice,ButtonType.OK);
+                 a1.show();
              }
              else
              {
                  // If there's an error, then there must be a child in a R-Rate film or without supervision
                  System.out.println("Cannot book a child in R-Rated Movies or Unsupervised in M-Rated Movies");
-            	 //JOptionPane.showMessageDialog(this, "Cannot book a child in R-Rated Movies or Unsupervised in M-Rated Movies", ticketCounter + " Tickets Not Booked", JOptionPane.ERROR_MESSAGE);
+                 Alert a1 = new Alert(AlertType.NONE,  
+                		 "Cannot book a child in R-Rated Movies or Unsupervised in M-Rated Movies",ButtonType.OK);
+                 a1.show();
              }
          }
          else
          {
              // If a movie isn't selected
              System.out.println("select a movie");
-
+             Alert a1 = new Alert(AlertType.NONE,  
+            		 "Please select a movie first",ButtonType.OK);
+             a1.show();
+             
              //JOptionPane.showMessageDialog(this, "Please select a movie first", "Booking Error", JOptionPane.ERROR_MESSAGE);
          }
          disableTicketPanel(true);

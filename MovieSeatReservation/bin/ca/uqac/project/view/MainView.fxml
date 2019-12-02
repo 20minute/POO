@@ -32,7 +32,7 @@
        <RadioButton fx:id= "elderly" mnemonicParsing="false" text="Elderly" toggleGroup="$group1" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
        <CheckBox fx:id="complementary" text="Complementary" GridPane.columnIndex="4" GridPane.rowIndex="0"/>
        <Button fx:id="newButton" mnemonicParsing="false" text="New" GridPane.columnIndex="5" GridPane.rowIndex="0" onMouseClicked="#newEvent"/>
-       <Button fx:id="bookButton" mnemonicParsing="false" text="Book" GridPane.columnIndex="6" GridPane.rowIndex="0" onMouseClicked="#bookEvent"/>
+       <Button fx:id="bookButton" mnemonicParsing="false" text="Book" GridPane.columnIndex="6" GridPane.rowIndex="0" onAction="#bookEvent"/>
        <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" GridPane.columnIndex="7" GridPane.rowIndex="0" onMouseClicked="#cancelEvent"/>
        <Button fx:id="exitButton" mnemonicParsing="false" text="Exit" GridPane.columnIndex="8" GridPane.rowIndex="0" onMouseClicked="#exitEvent"/>
    </GridPane>
