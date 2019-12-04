@@ -1,28 +1,16 @@
 package ca.uqac.project.controller;
 
-import java.awt.Color;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
-
 import application.*;
 import ca.uqac.project.model.*;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -31,7 +19,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
@@ -39,10 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 
 public class MainController extends BorderPane{
 
@@ -78,6 +62,8 @@ public class MainController extends BorderPane{
 
 	private ArrayList<Session> movies = new ArrayList<Session>();
     private ObservableList<Session> observableList = FXCollections.observableArrayList();
+    
+    private TransferTool transferTool = new TransferTool();
 
     /**
      * initialize the background color of the scene
@@ -87,6 +73,7 @@ public class MainController extends BorderPane{
     {
     	setListView();
     	initializeSeat();
+    	initializeToolBar();
     }
     
     public MainController(){
@@ -100,6 +87,15 @@ public class MainController extends BorderPane{
 	        } catch (IOException exception) {
 	            throw new RuntimeException(exception);
 	        }
+    }
+    private void initializeToolBar() {
+    	complementary.setDisable(true);
+    	adult.setDisable(true);
+    	child.setDisable(true);
+    	elderly.setDisable(true);
+    	newButton.setDisable(true);
+    	cancelButton.setDisable(true);
+    	bookButton.setDisable(true);
     }
     private void initializeSeat() {
     	for(int i = 0; i < Session.NUM_ROWS; i++) {
@@ -284,13 +280,16 @@ public class MainController extends BorderPane{
          // Checking if there's an item selected in the list
          if (currentSession != null)
          {
-             
              // Check if applying bookings doesn't have any errors
              if (currentSession.applyBookings(this.currentReservation))
              {
                  // Add all the tickets from all reservations
                  for (; ticketCounter < this.currentReservation.size(); ticketCounter++)
                  {
+                	 transferTool.getSeatInfo(this.currentReservation.get(ticketCounter));
+                	 transferTool.writeInfo();
+                	 transferTool.readInfo();
+                	 
                      totalPrice += this.currentReservation.get(ticketCounter).getTicketPrice();
                  }
                  System.out.println("TICKET COST IS: $" + totalPrice);
