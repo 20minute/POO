@@ -57,13 +57,10 @@ public class TransferTool {
 //				channel.write(buffer); //write
 //			}
 			
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		} 
 	}
 	
 	public void readInfo() {
@@ -72,21 +69,12 @@ public class TransferTool {
 			FileChannel      channel = aFile.getChannel();
 		
 			ObjectInputStream ois = new ObjectInputStream (Channels.newInputStream(channel));
-			
 			Object test = ois.readObject();
 			System.out.println(test.toString());
 			
-			
-			
-		} catch (FileNotFoundException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}catch (ClassNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		} 
 	}
 }

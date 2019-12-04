@@ -509,14 +509,14 @@ public class GUI extends JPanel implements ActionListener, ListSelectionListener
     {
         // Initializing all the movies in an array
         Session[] myMovieSession = new Session[8];
-        myMovieSession[0] = new Session(new Movie("SCP: The Movie", 'R'), new Time(16, 30));
-        myMovieSession[1] = new Session(new Movie("The Predator", 'M'), new Time(4, 45, 30));
-        myMovieSession[2] = new Session(new Movie("Justice League", 'G'), new Time(4, 30));
-        myMovieSession[3] = new Session(new Movie("Deadpool 2", 'R'), new Time(4, 30));
-        myMovieSession[4] = new Session(new Movie("Avengers: Infinity War", 'G'), new Time(2));
-        myMovieSession[5] = new Session(new Movie("Logan", 'R'), new Time(7, 30));
-        myMovieSession[6] = new Session(new Movie("Slenderman", 'M'), new Time(2, 30, 25));
-        myMovieSession[7] = new Session(new Movie("Despasito", 'M'), new Time()); 
+        myMovieSession[0] = new Session(1, new Movie("SCP: The Movie", 'R'), new Time(16, 30));
+        myMovieSession[1] = new Session(2, new Movie("The Predator", 'M'), new Time(4, 45, 30));
+        myMovieSession[2] = new Session(3, new Movie("Justice League", 'G'), new Time(4, 30));
+        myMovieSession[3] = new Session(4, new Movie("Deadpool 2", 'R'), new Time(4, 30));
+        myMovieSession[4] = new Session(5, new Movie("Avengers: Infinity War", 'G'), new Time(2));
+        myMovieSession[5] = new Session(6, new Movie("Logan", 'R'), new Time(7, 30));
+        myMovieSession[6] = new Session(7, new Movie("Slenderman", 'M'), new Time(2, 30, 25));
+        myMovieSession[7] = new Session(8, new Movie("Despasito", 'M'), new Time()); 
         ArrayList<Session> movies = new ArrayList(Arrays.asList(myMovieSession));
         Collections.sort(movies);
 

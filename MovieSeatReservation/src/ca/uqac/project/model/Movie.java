@@ -1,6 +1,8 @@
 package ca.uqac.project.model;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable {
 
 	private String name;
 	private char rating;

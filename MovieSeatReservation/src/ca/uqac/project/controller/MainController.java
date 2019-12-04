@@ -58,13 +58,15 @@ public class MainController extends BorderPane{
 	private Button exitButton;
 	
     private ArrayList<SeatReservation> currentReservation;
-    private Session currentSession;
+    
 
 	private ArrayList<Session> movies = new ArrayList<Session>();
     private ObservableList<Session> observableList = FXCollections.observableArrayList();
     
-    private TransferTool transferTool = new TransferTool();
+    //private TransferTool transferTool = new TransferTool();
+    private CreateData bs = new CreateData();
 
+    private Session currentSession;
     /**
      * initialize the background color of the scene
      */
@@ -77,6 +79,8 @@ public class MainController extends BorderPane{
     }
     
     public MainController(){
+//    	if(bs.createFile()) 
+//    	{ System.out.println("yep");}
     	currentReservation = new ArrayList();
         currentReservation.clear();
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/MainView.fxml"));
@@ -88,6 +92,9 @@ public class MainController extends BorderPane{
 	            throw new RuntimeException(exception);
 	        }
     }
+    /**
+     * @brief Disable all buttons except exit
+     */
     private void initializeToolBar() {
     	complementary.setDisable(true);
     	adult.setDisable(true);
@@ -98,15 +105,26 @@ public class MainController extends BorderPane{
     	bookButton.setDisable(true);
     }
     private void initializeSeat() {
+    	
     	for(int i = 0; i < Session.NUM_ROWS; i++) {
     		for(int j = 0; j < Session.NUM_COLS; j++) {
     			int tmpI = i;
     			int tmpJ = j;
-    			String text = Character.toString(Conversion.convertIndexToRow(i)) + j;
     			seatingButtons[i][j] = new Button();
+    			String text = Character.toString(Conversion.convertIndexToRow(i)) + j;
+    			if(currentSession !=null) {
+    				if(currentSession.getSeat(Conversion.convertIndexToRow(i), j) instanceof ChildReservation){
+                        seatingButtons[i][j].setStyle("-fx-background-color: #F7B32B; -fx-text-fill: #034078;");
+        			} else if(currentSession.getSeat(Conversion.convertIndexToRow(i), j) instanceof AdultReservation){
+                        seatingButtons[i][j].setStyle("-fx-background-color: #001F54; -fx-text-fill: #FEFCFB;");
+        			}else if(currentSession.getSeat(Conversion.convertIndexToRow(i), j) instanceof ElderlyReservation){
+                        seatingButtons[i][j].setStyle("-fx-background-color: #F2F4F3; -fx-text-fill: #034078;");
+        			}
+    			}else {
+        			seatingButtons[i][j].setStyle("-fx-background-color: #1282A2; -fx-border-color: #034078; -fx-text-fill: #FEFCFB; -fx-font-size:14;");
+    			}
     			seatingButtons[i][j].setText(text);
     			seatingButtons[i][j].setPrefSize(120, 65);
-    			seatingButtons[i][j].setStyle("-fx-background-color: #1282A2; -fx-border-color: #034078; -fx-text-fill: #FEFCFB; -fx-font-size:14;");
     			seatingButtons[i][j].setDisable(true);
     			seatingButtons[i][j].setOnMouseClicked((MouseEvent e)->{
     				
@@ -211,9 +229,12 @@ public class MainController extends BorderPane{
     }
 
 	private void setListView(){
-
-    	DataBase bs = new DataBase();
-    	movies= bs.getSessions();
+    	movies = bs.readSessions();
+    	if(movies.size() != 9 )
+    	{
+    		movies = bs.getSessions();
+    	}
+    	
         observableList.setAll(movies);
 
         sessionList.setItems(observableList);
@@ -286,12 +307,11 @@ public class MainController extends BorderPane{
                  // Add all the tickets from all reservations
                  for (; ticketCounter < this.currentReservation.size(); ticketCounter++)
                  {
-                	 transferTool.getSeatInfo(this.currentReservation.get(ticketCounter));
-                	 transferTool.writeInfo();
-                	 transferTool.readInfo();
-                	 
                      totalPrice += this.currentReservation.get(ticketCounter).getTicketPrice();
                  }
+                 
+                 bs.reserveSeats(currentSession);
+                 
                  System.out.println("TICKET COST IS: $" + totalPrice);
                  Alert a1 = new Alert(AlertType.NONE,  
                 		 "TICKET COST IS: $" + totalPrice,ButtonType.OK);

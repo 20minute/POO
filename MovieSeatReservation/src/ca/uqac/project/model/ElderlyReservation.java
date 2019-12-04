@@ -2,7 +2,6 @@ package ca.uqac.project.model;
 
 public class ElderlyReservation extends SeatReservation
 {
-
 	public static float discount = 0.3f;
     /**
      * Constructor that sends in the row and column information back to the Seat Reservation parent.

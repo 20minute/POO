@@ -1,6 +1,6 @@
 package ca.uqac.project.model;
-
-public class Time implements Comparable<Time>
+import java.io.Serializable;
+public class Time implements Comparable<Time>,Serializable
 {
     
     private int hours;

@@ -2,7 +2,6 @@ package ca.uqac.project.model;
 
 public class ChildReservation extends SeatReservation
 {
-
     /**
      * Constructor that sends in the row and column information back to the Seat Reservation parent.
      * @param row which row the seat is in.

@@ -1,9 +1,9 @@
 package ca.uqac.project.model;
 
+import java.io.Serializable;
 
-public abstract class SeatReservation
+public abstract class SeatReservation implements Serializable
 {
-
     private char row;
     private int col;
     protected boolean complementary; // Is the seat reservation free?

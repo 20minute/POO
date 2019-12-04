@@ -1,11 +1,13 @@
 package ca.uqac.project.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 
 
-public class Session implements Conversion,Comparable<Session>{
+public class Session implements Serializable, Conversion,Comparable<Session>{
 
+	private int id;
 	private Movie movie;
 	private Time sessionTime;
 	private SeatReservation[][] sessionSeats;
@@ -19,12 +21,14 @@ public class Session implements Conversion,Comparable<Session>{
      * @param rating Rating of the movie (G/M/R).
      * @param sessionTime Time the movie starts (HOURS:MINUTES:SECONDS).
      */
-    public Session(Movie movie, Time sessionTime)
+    public Session(int id,Movie movie, Time sessionTime)
     {
+    	this.id = id;
         this.movie = movie;
         this.sessionTime = sessionTime;
         this.sessionSeats = new SeatReservation[Session.NUM_ROWS][Session.NUM_COLS];
     }
+    
     /**
      * Method to get the Movie.
      * @return the Movie.
@@ -32,6 +36,15 @@ public class Session implements Conversion,Comparable<Session>{
 	public Movie getMovie() {
 		return movie;
 	}
+	
+	/**
+     * Method to get the session id.
+     * @return the id.
+     */
+	public int getId() {
+		return id;
+	}
+
 	/**
      * Method to get the Session class session time.
      * @return the Movie Session's session time.
@@ -49,6 +62,19 @@ public class Session implements Conversion,Comparable<Session>{
     public SeatReservation getSeat(char row, int col)
     {
         return sessionSeats[Conversion.convertRowToIndex(row)][col];
+    }
+    
+    /**
+     * A method to get the seat specified by the caller.
+     * @param row which seat row.
+     * @param col which seat column. 
+     * @param new seat status
+     */
+    public void setSeat(SeatReservation newSeatReservation)
+    {
+    	char row = newSeatReservation.getRow();
+    	int col = newSeatReservation.getCol();
+        sessionSeats[Conversion.convertRowToIndex(row)][col] = newSeatReservation;
     }
 
     /**
@@ -135,22 +161,9 @@ public class Session implements Conversion,Comparable<Session>{
     {
     	int rest = 0;
         String movieInfo = String.format("(" + getMovie().getRating() + ") " + getMovie().getName() +  " - [" + this.sessionTime + "]");
-//        if(sessionSeats == null) 
-//        {
-//        	
-//        	for(int i = 0 ; i <NUM_ROWS ;i++ ){
-//            	for(int j = 0; j <NUM_COLS ; j++) {
-//            		if(!sessionSeats[i][j].complementary)
-//            		{
-//            			rest++;
-//            		}
-//            	}
-//            }
-//            String result = movieInfo + "\n This session has " + rest +"seats left.\n ";
-//            return result;
-//        }
         return movieInfo;
     }
+ 
 
     /**
      * Overridden method used to compare different movie sessions.
@@ -172,4 +185,5 @@ public class Session implements Conversion,Comparable<Session>{
             return this.sessionTime.compareTo(otherMovieSession.getSessionTime());
         }
     }
+
 }
