@@ -1,7 +1,6 @@
 package application;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,17 +15,22 @@ import java.util.ArrayList;
 
 import ca.uqac.project.model.*;
 
+/**
+ * 
+ * @author zlj
+ * @brief database of application
+ *
+ */
 public class CreateData {
 
-	private ArrayList<Session> movies = new ArrayList<Session>();
-	private ArrayList<Info> seatInfoList;
-    
+	private ArrayList<Session> movies;
 	
 	public CreateData() {
-		seatInfoList = new ArrayList<Info>();
-		
+		movies = new ArrayList<Session>();
 	}
-	
+	/**
+	 * @brief Simulates movie sessions
+	 */
 	private void createData()
 	{
         movies.add(new Session(1,new Movie( "SCP: The Movie", 'R'), new Time(16, 30)));
@@ -39,14 +43,19 @@ public class CreateData {
 		movies.add(new Session(8,new Movie( "Avenger End", 'G'), new Time(1, 45, 30)));
 		movies.add(new Session(9,new Movie( "Despasito", 'M'), new Time()));
 	}
-	
+	/**
+	 * @brief Creates movie sessions and create files for every session
+	 * @return a list of sessions
+	 */
 	public ArrayList<Session> getSessions() {
 		createData();
 		createFiles();
 		
 		return movies;
 	}
-	
+	/**
+	 * @brief Creates .txt database for every session
+	 */
 	private void createFiles() {
 		try {
 			for(Session session : movies)
@@ -64,30 +73,20 @@ public class CreateData {
 				channel.write (ByteBuffer.wrap (baos.toByteArray()));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
 	
+	/**
+	 * @brief Gets size of list of sessions
+	 */
 	public int getMoviesSize() {
 		return movies.size();
 	}
-	
-	public void getSeatInfo(SeatReservation seatReservation) {
-			
-		int type = -1;
-		System.out.println(seatReservation.getClass().toString()); 
-		
-		if(seatReservation instanceof ChildReservation){type = 1;} 
-		else if(seatReservation instanceof AdultReservation){type = 2;} 
-		else if (seatReservation instanceof ElderlyReservation){type = 3;} 
-		
-		char row = seatReservation.getRow();
-		int col = seatReservation.getCol();
-			
-		seatInfoList.add(new Info(row,col,type));
-	}
-	
+	/**
+	 * @brief Reserves seats for the current session
+	 * @param currentSession 
+	 */
 	public void reserveSeats(Session currentSession) {
 		try {
 			
@@ -105,14 +104,16 @@ public class CreateData {
 			channel.write (ByteBuffer.wrap (baos.toByteArray()));
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
-	
+	/**
+	 * @brief Reads all the sessions from a specific file path
+	 * @return a list of sessions 
+	 */
 	public ArrayList<Session> readSessions() {
         try {
-        	Path startingDir = Paths.get("I:\\JEEworkspace2\\POO\\MovieSeatReservation\\src");
+        	Path startingDir = Paths.get(".\\src");
 
             FileFinder  filterFilesVisitor= new FileFinder(".txt");
             Files.walkFileTree(startingDir, filterFilesVisitor);
@@ -126,11 +127,9 @@ public class CreateData {
 				movies.add(session);
 	        }
         } catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} 
         return movies;
 	}
-	
 }

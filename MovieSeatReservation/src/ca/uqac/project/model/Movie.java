@@ -3,7 +3,6 @@ package ca.uqac.project.model;
 import java.io.Serializable;
 
 public class Movie implements Serializable {
-
 	private String name;
 	private char rating;
 	public Movie(String name, char rating) {
@@ -22,6 +21,4 @@ public class Movie implements Serializable {
 	public void setRating(char rating) {
 		this.rating = rating;
 	}
-	
-	
 }

@@ -28,6 +28,12 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.GridPane;
 
+/**
+ * 
+ * @author zlj
+ * @brief main controller of this applicaition
+ *
+ */
 public class MainController extends BorderPane{
 
 	@FXML
@@ -63,7 +69,6 @@ public class MainController extends BorderPane{
 	private ArrayList<Session> movies = new ArrayList<Session>();
     private ObservableList<Session> observableList = FXCollections.observableArrayList();
     
-    //private TransferTool transferTool = new TransferTool();
     private CreateData bs = new CreateData();
 
     private Session currentSession;
@@ -79,9 +84,7 @@ public class MainController extends BorderPane{
     }
     
     public MainController(){
-//    	if(bs.createFile()) 
-//    	{ System.out.println("yep");}
-    	currentReservation = new ArrayList();
+    	currentReservation = new ArrayList<SeatReservation>();
         currentReservation.clear();
     	FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/MainView.fxml"));
 	        fxmlLoader.setRoot(this);
@@ -104,6 +107,9 @@ public class MainController extends BorderPane{
     	cancelButton.setDisable(true);
     	bookButton.setDisable(true);
     }
+    /**
+     * @brief Initialize all the seats
+     */
     private void initializeSeat() {
     	
     	for(int i = 0; i < Session.NUM_ROWS; i++) {
@@ -130,6 +136,9 @@ public class MainController extends BorderPane{
     				
     				if(group1.getSelectedToggle() == null) {
     					System.out.println("Please select the type of ticket below");
+    	                 Alert a1 = new Alert(AlertType.NONE,  
+    	                		 "Please select the type of ticket below",ButtonType.OK);
+    	                 a1.show();
     				}else {
     					SeatReservation reservation;
     					if(adult.isSelected()) {
@@ -152,8 +161,6 @@ public class MainController extends BorderPane{
     		}
     	}
     }
-    
-
     /**
      *  Updating the seats depending whether they have already been booked, being booked, and if the seat reservation list by the user is empty.
      */
@@ -172,10 +179,8 @@ public class MainController extends BorderPane{
             cancelButton.setDisable(false);
             bookButton.setDisable(false);
         }
-        
         for(int row = 0; row < Session.NUM_ROWS;row++) {
         	for(int col = 0; col < Session.NUM_COLS;col++) {
-                //seatingButtons[row][col].setStyle("-fx-border-color: #034078;");
                 seatingButtons[row][col].setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
 
                 if (currentSession.getSeat(Conversion.convertIndexToRow(row), col) instanceof AdultReservation)
@@ -199,7 +204,6 @@ public class MainController extends BorderPane{
                 }
         	}
         }
-        
         // Printing and Setting Selected Current Reservations to update the buttons
         int selectedRow, selectedCol;
         for (int counter = 0; counter < this.currentReservation.size(); counter++)
@@ -209,7 +213,6 @@ public class MainController extends BorderPane{
             seatingButtons[selectedRow][selectedCol].setDisable(true);
             seatingButtons[selectedRow][selectedCol].setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
             
-            //seatingButtons[selectedRow][selectedCol].setStyle("-fx-border-color: #034078;");
             // If the current reservation made is an instanc eof adult reservation
             if (this.currentReservation.get(counter) instanceof AdultReservation)
             {
@@ -227,7 +230,9 @@ public class MainController extends BorderPane{
             }
         }
     }
-
+    /**
+     *  Initialize the movie sessions
+     */
 	private void setListView(){
     	movies = bs.readSessions();
     	if(movies.size() != 9 )
@@ -254,7 +259,6 @@ public class MainController extends BorderPane{
                 updateSeats();
         });
     }
-	
 	 /**
      * Manages the Ticket Panel on whether they should be enabled or disabled.
      * @param bool how should they be set.
@@ -333,8 +337,6 @@ public class MainController extends BorderPane{
              Alert a1 = new Alert(AlertType.NONE,  
             		 "Please select a movie first",ButtonType.OK);
              a1.show();
-             
-             //JOptionPane.showMessageDialog(this, "Please select a movie first", "Booking Error", JOptionPane.ERROR_MESSAGE);
          }
          disableTicketPanel(true);
          disableMovieSeats(true);
@@ -357,7 +359,4 @@ public class MainController extends BorderPane{
 		 this.currentReservation.clear();
          System.exit(0);
     }
-	
-	
-
 }
